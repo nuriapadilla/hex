@@ -27,59 +27,94 @@ public class Jugador1 implements IPlayer, IAuto {
     int player;
     int mida;
 
-
-    public Jugador1(boolean i, int p){
+    public Jugador1(boolean i, int p) {
         id = i;
         profMax = p;
     }
-    public int heuristica(/*HexGameStatus hgs*/) {
-        nodesExplored = nodesExplored +1;
-        /*int cami1;
+
+    public int heuristica(HexGameStatus hgs) {
+        nodesExplored = nodesExplored + 1;
+        int cami1;
         int cami2;
-        if (player==1){
-            cami1 = camiMesCurt(hgs, new Point(-1,0), new Point(hgs.getSize(),0), 1);
+        if (player == 1) {
+            cami1 = camiMesCurt(hgs, new Point(-1, 0), new Point(hgs.getSize(), 0), 1);
             cami2 = camiMesCurt(hgs, new Point(0, -1), new Point(0, hgs.getSize()), -1);
-        }else{
+        } else {
             cami2 = camiMesCurt(hgs, new Point(-1, 0), new Point(hgs.getSize(), 0), -1);
             cami1 = camiMesCurt(hgs, new Point(0, -1), new Point(0, hgs.getSize()), 1);
         }
-        return cami2-cami1;*/
-        return 0;
+        return cami2 - cami1;
+        //return 0;
     }
-    /*
-    int camiMesCurt(HexGameStatus hgs, Point pIni, Point pFi, int p){
+
+    int camiMesCurt(HexGameStatus hgs, Point pIni, Point pFi, int p) {
         PriorityQueue<Node> pq = new PriorityQueue<>(new ComparadorComplex()); // Preguntar Bernat!!!!!
         pq.add(new Node(pIni, 0, pIni));
         Node actual;
-        while(pq.poll()!= null && !pq.poll().point.equals(pFi)){
+        while (pq.poll() != null && !pq.poll().point.equals(pFi)) {
             actual = pq.poll();
-            trobaVeins(actual, pq);
-            
+            trobaVeins(hgs, actual, pq, p);
+
         }
-         return 0;   
+        return 0;
     }
+
     private void trobaVeins(HexGameStatus hgs, Node actual, PriorityQueue<Node> pq, int p) {
-        if(actual.point.x == 0 && actual.point.y == -1){ // ESQUERRA
-            for(int i=0; i<mida; i++){
-                if(hgs.getPos(i, 0) == p){
-                    pq.add(new Node(new Point(i,0), actual.distance + 0, actual.point));
-                }
-                else if(hgs.getPos(i,0)==0){
-                    pq.add(new Node(new Point(i, 0), actual.distance + 1, actual.point));
+        if (actual.point.x == -1 && actual.point.y == 0) { // ESQUERRA
+            for (int i = 0; i < mida; i++) {
+                if (hgs.getPos(0, i) == p) {
+                    pq.add(new Node(new Point(0, i), actual.distance + 0, actual.point));
+                } else if (hgs.getPos(0, i) == 0) {
+                    pq.add(new Node(new Point(0, i), actual.distance + 1, actual.point));
                 }
             }
-        }else if(actual.point.x == 0 && actual.point.y == 0){
-            for(int i=0; i<mida; i++){
-                if(hgs.getPos(i, 0) == p){
-                    pq.add(new Node(new Point(i,0), actual.distance + 0, actual.point));
-                }
-                else if(hgs.getPos(i,0)==0){
+        } else if (actual.point.x == 0 && actual.point.y == -1) { // A DALT
+            for (int i = 0; i < mida; i++) {
+                if (hgs.getPos(0, i) == p) {
+                    pq.add(new Node(new Point(i, 0), actual.distance + 0, actual.point));
+                } else if (hgs.getPos(i, 0) == 0) {
                     pq.add(new Node(new Point(i, 0), actual.distance + 1, actual.point));
                 }
             }
 
+        } else {
+            if(hgs.getPos(actual.point.x-1, actual.point.y) == p){
+                 pq.add(new Node(new Point(actual.point.x-1,actual.point.y),actual.distance+0,actual.point));
+            } else if (hgs.getPos(actual.point.x-1, actual.point.y) == 0){
+                 pq.add(new Node(new Point(actual.point.x-1,actual.point.y),actual.distance+1,actual.point));
+            }  
+            
+            if(hgs.getPos(actual.point.x, actual.point.y-1) == p){
+                 pq.add(new Node(new Point(actual.point.x,actual.point.y-1),actual.distance+0,actual.point));
+            } else if (hgs.getPos(actual.point.x-1, actual.point.y) == 0){
+                 pq.add(new Node(new Point(actual.point.x,actual.point.y-1),actual.distance+1,actual.point));
+            }  
+            
+            if(hgs.getPos(actual.point.x+1, actual.point.y+1) == p){
+                 pq.add(new Node(new Point(actual.point.x+1,actual.point.y+1),actual.distance+0,actual.point));
+            } else if (hgs.getPos(actual.point.x-1, actual.point.y+1) == 0){
+                 pq.add(new Node(new Point(actual.point.x+1,actual.point.y+1),actual.distance+1,actual.point));
+            }  
+            
+            if(hgs.getPos(actual.point.x+1, actual.point.y) == p){
+                 pq.add(new Node(new Point(actual.point.x+1,actual.point.y),actual.distance+0,actual.point));
+            } else if (hgs.getPos(actual.point.x+1, actual.point.y) == 0){
+                 pq.add(new Node(new Point(actual.point.x+1,actual.point.y),actual.distance+1,actual.point));
+            }
+            
+            if(hgs.getPos(actual.point.x-1, actual.point.y+1) == p){
+                 pq.add(new Node(new Point(actual.point.x-1,actual.point.y+1),actual.distance+0,actual.point));
+            } else if (hgs.getPos(actual.point.x-1, actual.point.y+1) == 0){
+                 pq.add(new Node(new Point(actual.point.x-1,actual.point.y+1),actual.distance+1,actual.point));
+            }  
+            
+            if(hgs.getPos(actual.point.x, actual.point.y-1) == p){
+                 pq.add(new Node(new Point(actual.point.x,actual.point.y-1),actual.distance+0,actual.point));
+            } else if (hgs.getPos(actual.point.x, actual.point.y) == 0){
+                 pq.add(new Node(new Point(actual.point.x,actual.point.y-1),actual.distance+1,actual.point));
+            }  
+        } 
     }
-*/
 
     /**
      * Implementa l'algorisme Minimax per calcular el millor moviment
@@ -90,15 +125,17 @@ public class Jugador1 implements IPlayer, IAuto {
      * @return Columna òptima per al moviment.
      */
     public PlayerMove minimax(HexGameStatus hgs, int profunditat) { // LA PRINCIPAL
-        if(fi) return null;
+        if (fi) {
+            return null;
+        }
         int alpha = Integer.MIN_VALUE;
         int beta = Integer.MAX_VALUE;
         PlayerMove jugada = null;
-        boolean primer= true;
+        boolean primer = true;
         int maxEval = Integer.MIN_VALUE;
-        SearchType search = id==true ? SearchType.MINIMAX_IDS : SearchType.MINIMAX;
+        SearchType search = id == true ? SearchType.MINIMAX_IDS : SearchType.MINIMAX;
         // Si tenim millor jiugada previa, prioritzem exprorar-la
-        if(iniMillorJugada){
+        if (iniMillorJugada) {
             HexGameStatus newHgs = new HexGameStatus(hgs);
             Point punt = millorJugada.getPoint();
             if (newHgs.getPos(punt.x, punt.y) == 0) {
@@ -122,7 +159,7 @@ public class Jugador1 implements IPlayer, IAuto {
                 }
             }
         }
-        
+
         for (int i = 0; i < hgs.getSize(); i++) {
             for (int j = 0; j < hgs.getSize(); j++) {
                 if (fi) {
@@ -131,7 +168,7 @@ public class Jugador1 implements IPlayer, IAuto {
                 // System.out.println("Evaluo la posició: " + i +" "+ j);
                 HexGameStatus newHgs = new HexGameStatus(hgs);
                 Point punt = new Point(i, j);
-                if(iniMillorJugada && (millorJugada.getPoint()).equals(punt)){
+                if (iniMillorJugada && (millorJugada.getPoint()).equals(punt)) {
                     // System.out.println("No entenc"+ millorJugada.getPoint().x);
                     break;
                 }
@@ -159,7 +196,9 @@ public class Jugador1 implements IPlayer, IAuto {
                 }
             }
         }
-        if(maxEval == Integer.MIN_VALUE) System.out.println("Perdo 100%");
+        if (maxEval == Integer.MIN_VALUE) {
+            System.out.println("Perdo 100%");
+        }
         return jugada;
     }
 
@@ -174,7 +213,9 @@ public class Jugador1 implements IPlayer, IAuto {
      */
     public int minimazing(HexGameStatus hgs, int profunditat, int alpha, int beta) {
         int minEval = Integer.MAX_VALUE;
-        if (fi) return minEval; // retorno qualsevol cosa 
+        if (fi) {
+            return minEval; // retorno qualsevol cosa 
+        }
         if (profunditat == 0) {
             int h = heuristica();
             return h;
@@ -182,7 +223,9 @@ public class Jugador1 implements IPlayer, IAuto {
 
         for (int i = 0; i < hgs.getSize(); i++) {
             for (int j = 0; j < hgs.getSize(); j++) {
-                if(fi) return Integer.MAX_VALUE; // retorno qualsevol cosa
+                if (fi) {
+                    return Integer.MAX_VALUE; // retorno qualsevol cosa
+                }
                 HexGameStatus newHgs = new HexGameStatus(hgs);
                 Point punt = new Point(i, j);
                 if (newHgs.getPos(i, j) == 0) {
@@ -226,7 +269,9 @@ public class Jugador1 implements IPlayer, IAuto {
      */
     public int maximazing(HexGameStatus hgs, int profunditat, int alpha, int beta) {
         int maxEval = Integer.MIN_VALUE;
-        if(fi) return maxEval; // retorno qualsevol cosa
+        if (fi) {
+            return maxEval; // retorno qualsevol cosa
+        }
         if (profunditat == 0) {
             int h = heuristica();
             return h;
@@ -234,7 +279,9 @@ public class Jugador1 implements IPlayer, IAuto {
 
         for (int i = 0; i < hgs.getSize(); i++) {
             for (int j = 0; j < hgs.getSize(); j++) {
-                if(fi) return maxEval; // retorno qualsevol cosa
+                if (fi) {
+                    return maxEval; // retorno qualsevol cosa
+                }
                 HexGameStatus newHgs = new HexGameStatus(hgs);
                 Point punt = new Point(i, j);
                 if (newHgs.getPos(i, j) == 0) {
@@ -269,22 +316,22 @@ public class Jugador1 implements IPlayer, IAuto {
         player = hgs.getCurrentPlayerColor();
         mida = hgs.getSize();
         nodesExplored = 0;
-        System.out.println(hgs.getPos(0, 1));
-        if(id){
+        System.out.println(hgs.getPos(1, 0));
+        if (id) {
             int prof = 1;
-            while(!fi){
+            while (!fi) {
                 nodesExplored = 0;
-                System.out.println("Miro la prof: "+ prof);
+                System.out.println("Miro la prof: " + prof);
                 // TODO: si ja veiem que guanyem amb tot o perdem a tot fem un if guarro i tallem, no cal seguir amb més profunditat
                 PlayerMove newJugada = minimax(hgs, prof);
-                if(!fi){
+                if (!fi) {
                     millorJugada = newJugada;
                     iniMillorJugada = true;
                 }
                 prof++;
             }
             fi = false;
-        }else{
+        } else {
             millorJugada = minimax(hgs, profMax);
         }
         return millorJugada;
@@ -293,11 +340,13 @@ public class Jugador1 implements IPlayer, IAuto {
 
     @Override
     public void timeout() {
-        if(id) fi = true;
+        if (id) {
+            fi = true;
+        }
     }
 
     @Override
     public String getName() {
-        return("bondia");   
+        return ("bondia");
     }
 }
