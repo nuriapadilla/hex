@@ -22,6 +22,7 @@ public class Jugador1 implements IPlayer, IAuto {
     boolean fi = false;
     boolean iniMillorJugada = false;
     PlayerMove millorJugada;
+    long nodesExplored;
 
 
     public Jugador1(boolean i, int p){
@@ -29,6 +30,7 @@ public class Jugador1 implements IPlayer, IAuto {
         profMax = p;
     }
     public int heuristica() {
+        nodesExplored = nodesExplored +1;
         return 0;
     }
 
@@ -47,21 +49,22 @@ public class Jugador1 implements IPlayer, IAuto {
         PlayerMove jugada = null;
         boolean primer= true;
         int maxEval = Integer.MIN_VALUE;
-      
-        // Si tenim millor jugada previa, prioritzem exprorar-la
+        SearchType search = id==true ? SearchType.MINIMAX_IDS : SearchType.MINIMAX;
+        // Si tenim millor jiugada previa, prioritzem exprorar-la
         if(iniMillorJugada){
             HexGameStatus newHgs = new HexGameStatus(hgs);
             Point punt = millorJugada.getPoint();
             if (newHgs.getPos(punt.x, punt.y) == 0) {
                 newHgs.placeStone(punt);
+                System.out.println("LA m");
                 if (newHgs.isGameOver()) {
-                    return new PlayerMove(punt, 0, profunditat, SearchType.MINIMAX); // canviar el 0 i la profunditat, esta malament
+                    return new PlayerMove(punt, nodesExplored, profunditat, search); // canviar el 0 i la profunditat, esta malament
                 } else {
                     int h = minimazing(newHgs, profunditat, alpha, beta);
                     if (h > maxEval || primer) {
                         maxEval = h;
                         primer = false;
-                        jugada = new PlayerMove(punt, 0, profunditat, SearchType.MINIMAX);
+                        jugada = new PlayerMove(punt, nodesExplored, profunditat, search);
                     }
                     if (h > alpha) {
                         alpha = h;
@@ -78,17 +81,17 @@ public class Jugador1 implements IPlayer, IAuto {
                 if (fi) {
                     return null;
                 }
-                System.out.println("Evaluo la posició: " + i +" "+ j);
+                // System.out.println("Evaluo la posició: " + i +" "+ j);
                 HexGameStatus newHgs = new HexGameStatus(hgs);
                 Point punt = new Point(i, j);
                 if(iniMillorJugada && (millorJugada.getPoint()).equals(punt)){
-                    System.out.println("No entenc"+ millorJugada.getPoint().x);
+                    // System.out.println("No entenc"+ millorJugada.getPoint().x);
                     break;
                 }
                 if (newHgs.getPos(i, j) == 0) {
                     newHgs.placeStone(punt);
                     if (newHgs.isGameOver()) {
-                        return new PlayerMove(punt, 0, profunditat, SearchType.MINIMAX); // canviar el 0 i la profunditat, esta malament
+                        return new PlayerMove(punt, nodesExplored, profunditat, search); // canviar el 0 i la profunditat, esta malament
                     } else {
                         int h = minimazing(newHgs, profunditat, alpha, beta);
                         //System.out.println("Per la columna: " + i + " tenim heuristica: " + h);
@@ -96,7 +99,7 @@ public class Jugador1 implements IPlayer, IAuto {
                             System.out.println("Aquesta es millor");
                             primer = false;
                             maxEval = h;
-                            jugada = new PlayerMove(punt, 0, profunditat, SearchType.MINIMAX);
+                            jugada = new PlayerMove(punt, nodesExplored, profunditat, search);
                         }
                         if (h > alpha) {
                             alpha = h;
@@ -215,10 +218,14 @@ public class Jugador1 implements IPlayer, IAuto {
 
     @Override
     public PlayerMove move(HexGameStatus hgs) {
-        hgs.getMoves(); // això perq ho fem ????????
+        // hgs.getMoves(); // això perq ho fem ????????
+        nodesExplored = 0;
         if(id){
             int prof = 1;
             while(!fi){
+                nodesExplored = 0;
+                System.out.println("Miro la prof: "+ prof);
+                // TODO: si ja veiem que guanyem amb tot o perdem a tot fem un if guarro i tallem, no cal seguir amb més profunditat
                 PlayerMove newJugada = minimax(hgs, prof);
                 if(!fi){
                     millorJugada = newJugada;
@@ -226,6 +233,7 @@ public class Jugador1 implements IPlayer, IAuto {
                 }
                 prof++;
             }
+            fi = false;
         }else{
             millorJugada = minimax(hgs, profMax);
         }
