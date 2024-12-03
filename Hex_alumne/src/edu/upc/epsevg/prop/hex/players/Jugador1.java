@@ -10,6 +10,7 @@ import edu.upc.epsevg.prop.hex.IPlayer;
 import edu.upc.epsevg.prop.hex.PlayerMove;
 import edu.upc.epsevg.prop.hex.SearchType;
 import java.awt.Point;
+import java.util.PriorityQueue;
 
 /**
  *
@@ -23,16 +24,62 @@ public class Jugador1 implements IPlayer, IAuto {
     boolean iniMillorJugada = false;
     PlayerMove millorJugada;
     long nodesExplored;
+    int player;
+    int mida;
 
 
     public Jugador1(boolean i, int p){
         id = i;
         profMax = p;
     }
-    public int heuristica() {
+    public int heuristica(/*HexGameStatus hgs*/) {
         nodesExplored = nodesExplored +1;
+        /*int cami1;
+        int cami2;
+        if (player==1){
+            cami1 = camiMesCurt(hgs, new Point(-1,0), new Point(hgs.getSize(),0), 1);
+            cami2 = camiMesCurt(hgs, new Point(0, -1), new Point(0, hgs.getSize()), -1);
+        }else{
+            cami2 = camiMesCurt(hgs, new Point(-1, 0), new Point(hgs.getSize(), 0), -1);
+            cami1 = camiMesCurt(hgs, new Point(0, -1), new Point(0, hgs.getSize()), 1);
+        }
+        return cami2-cami1;*/
         return 0;
     }
+    /*
+    int camiMesCurt(HexGameStatus hgs, Point pIni, Point pFi, int p){
+        PriorityQueue<Node> pq = new PriorityQueue<>(new ComparadorComplex()); // Preguntar Bernat!!!!!
+        pq.add(new Node(pIni, 0, pIni));
+        Node actual;
+        while(pq.poll()!= null && !pq.poll().point.equals(pFi)){
+            actual = pq.poll();
+            trobaVeins(actual, pq);
+            
+        }
+         return 0;   
+    }
+    private void trobaVeins(HexGameStatus hgs, Node actual, PriorityQueue<Node> pq, int p) {
+        if(actual.point.x == 0 && actual.point.y == -1){ // ESQUERRA
+            for(int i=0; i<mida; i++){
+                if(hgs.getPos(i, 0) == p){
+                    pq.add(new Node(new Point(i,0), actual.distance + 0, actual.point));
+                }
+                else if(hgs.getPos(i,0)==0){
+                    pq.add(new Node(new Point(i, 0), actual.distance + 1, actual.point));
+                }
+            }
+        }else if(actual.point.x == 0 && actual.point.y == 0){
+            for(int i=0; i<mida; i++){
+                if(hgs.getPos(i, 0) == p){
+                    pq.add(new Node(new Point(i,0), actual.distance + 0, actual.point));
+                }
+                else if(hgs.getPos(i,0)==0){
+                    pq.add(new Node(new Point(i, 0), actual.distance + 1, actual.point));
+                }
+            }
+
+    }
+*/
 
     /**
      * Implementa l'algorisme Minimax per calcular el millor moviment
@@ -219,7 +266,10 @@ public class Jugador1 implements IPlayer, IAuto {
     @Override
     public PlayerMove move(HexGameStatus hgs) {
         // hgs.getMoves(); // això perq ho fem ????????
+        player = hgs.getCurrentPlayerColor();
+        mida = hgs.getSize();
         nodesExplored = 0;
+        System.out.println(hgs.getPos(0, 1));
         if(id){
             int prof = 1;
             while(!fi){
@@ -250,5 +300,4 @@ public class Jugador1 implements IPlayer, IAuto {
     public String getName() {
         return("bondia");   
     }
-
 }
