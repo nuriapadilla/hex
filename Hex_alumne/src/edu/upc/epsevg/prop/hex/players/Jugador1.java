@@ -217,7 +217,7 @@ public class Jugador1 implements IPlayer, IAuto {
             return minEval; // retorno qualsevol cosa 
         }
         if (profunditat == 0) {
-            int h = heuristica();
+            int h = heuristica(hgs);
             return h;
         }
 
@@ -273,7 +273,7 @@ public class Jugador1 implements IPlayer, IAuto {
             return maxEval; // retorno qualsevol cosa
         }
         if (profunditat == 0) {
-            int h = heuristica();
+            int h = heuristica(hgs);
             return h;
         }
 
