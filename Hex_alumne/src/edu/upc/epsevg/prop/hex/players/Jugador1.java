@@ -9,6 +9,7 @@ import edu.upc.epsevg.prop.hex.IAuto;
 import edu.upc.epsevg.prop.hex.IPlayer;
 import edu.upc.epsevg.prop.hex.PlayerMove;
 import edu.upc.epsevg.prop.hex.SearchType;
+import static edu.upc.epsevg.prop.hex.UnitTesting.camiMesCurt;
 import java.awt.Point;
 import java.util.PriorityQueue;
 
@@ -42,13 +43,13 @@ public class Jugador1 implements IPlayer, IAuto {
         Node down = new Node("D", Integer.MAX_VALUE, null);
         //System.out.println(hgs.toString());
         if (player == 1) {
+            cami2 = camiMesCurt(hgs, left, right, 1);
+            cami1 = camiMesCurt(hgs, up, down, -1);
+        } else {
             cami1 = camiMesCurt(hgs, left, right, 1);
             cami2 = camiMesCurt(hgs, up, down, -1);
-        } else {
-            cami2 = camiMesCurt(hgs, left, right, -1);
-            cami1 = camiMesCurt(hgs, up, down, 1);
         }
-        return cami2 - cami1;
+        return cami1 - cami2;
         //return 0;
     }
 
@@ -163,6 +164,7 @@ public class Jugador1 implements IPlayer, IAuto {
             }
             actual = pq.poll();
         }
+        if(actual==null) System.out.println(hgs.toString());
         return actual.distance;
     }
 

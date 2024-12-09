@@ -34,7 +34,7 @@ public class Game {
                 
                 
                 
-                new Board(player2 , player3, 6 /*mida*/,  10/*s*/, false);
+                new Board(player3 , player1, 11 /*mida*/,  10/*s*/, false);
              }
         });
     }

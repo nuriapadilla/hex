@@ -39,12 +39,12 @@ public class UnitTesting {
 
         byte[][] board2 = {
             //X   0  1  2  3  4  5
-            {1, 1, -1, 0, 0, 0}, // 0   Y
-            {1, 0, -1, 0, 0, 0}, // 1
-            {0, -1, -1, 0, 0, 0}, // 2
-            {-1, 0, -1, 0, -1, 0}, // 3
-            {0, 0, -1, 0, 0, 1}, // 4
-            {0, 0, -1, 0, 1, -1} // 5   Y
+            {-1, -1, 1, 0, 0, 0}, // 0   Y
+            {-1, -1, 1, 0, 0, 0}, // 1
+            {-1, 1, 0, 1, -1, 0}, // 2
+            {-1, 1, 1, 1, 1, 0}, // 3
+            {1, -1, 0, 0, 0, 0}, // 4
+            {1, -1, 0, 0, 0, 0} // 5   Y
         };
 
         System.out.println("executem aixo visca");
@@ -64,22 +64,22 @@ public class UnitTesting {
         Node up = new Node("U", 0, null);
         Node down = new Node("D", Integer.MAX_VALUE, null);
         //System.out.println(hgs.toString());
-        int player = 1;
+        int player = -1;
         if (player == 1) {
+            cami2 = camiMesCurt(hgs, left, right, 1);
+            cami1 = camiMesCurt(hgs, up, down, -1);
+        } else {
             cami1 = camiMesCurt(hgs, left, right, 1);
             cami2 = camiMesCurt(hgs, up, down, -1);
-        } else {
-            cami2 = camiMesCurt(hgs, left, right, -1);
-            cami1 = camiMesCurt(hgs, up, down, 1);
         }
-        return cami2 - cami1;
+        return cami1 - cami2;
         //return 0;
     }
 
     public static int camiMesCurt(HexGameStatus hgs, Node nIni, Node nFi, int p) {
         // Problema: !!!! Pot utilitzar les cantonades per trobar el més curt aaaaaAAAA no pot ser això NOMES LA PRIMERAAAA
         // Hem decidit tenir els nodes en una PriorityQueue 
-        //   System.out.println("Estic cami mes curt");
+        System.out.println("Estic cami mes curt i el meu node ini: "+ nIni.corner + " node fi: "+ nFi.corner);
         int mida = 6;
 
         PriorityQueue<Node> pq = new PriorityQueue<Node>(new ComparadorNode()); // Preguntar Bernat!!!!!
@@ -126,7 +126,9 @@ public class UnitTesting {
 
         Node actual = pq.poll();
         while (actual != null && !(actual.esCantonada() && actual.corner.equals(nFi.corner))) {
-            System.out.println("em quedo a dintre" + nFi.corner);
+
+            if(actual.esCantonada()) System.out.println("Evaluo" + actual.corner);
+            else System.out.println("Evaluo "+ actual.point);
             for (Node element : pq) {
                 if (element.esCantonada()) {
                     System.out.println(element.corner+ " " + element.distance );
@@ -137,8 +139,7 @@ public class UnitTesting {
             }
             System.out.println("---------------------------------------");
 
-            if (!actual.esCantonada()) {
-                System.out.println("Estic aqui");
+            if (!actual.esCantonada() && !visitats[actual.point.x][actual.point.y]) {
                 visitats[actual.point.x][actual.point.y] = true;
                 //  System.out.println("Visito el punt: " + actual.point.x +"  "+ actual.point.y + " dist: "+ actual.distance);
                 if (actual.point.x > 0 && !visitats[actual.point.x - 1][actual.point.y]) {
