@@ -36,84 +36,134 @@ public class Jugador1 implements IPlayer, IAuto {
         nodesExplored = nodesExplored + 1;
         int cami1;
         int cami2;
+        Node left = new Node("L", 0, null);
+        Node right = new Node("R", Integer.MAX_VALUE, null);
+        Node up = new Node("U", 0, null);
+        Node down = new Node("D", Integer.MAX_VALUE, null);
+        //System.out.println(hgs.toString());
         if (player == 1) {
-            cami1 = camiMesCurt(hgs, new Point(-1, 0), new Point(hgs.getSize(), 0), 1);
-            cami2 = camiMesCurt(hgs, new Point(0, -1), new Point(0, hgs.getSize()), -1);
+            cami1 = camiMesCurt(hgs, left, right, 1);
+            cami2 = camiMesCurt(hgs, up, down, -1);
         } else {
-            cami2 = camiMesCurt(hgs, new Point(-1, 0), new Point(hgs.getSize(), 0), -1);
-            cami1 = camiMesCurt(hgs, new Point(0, -1), new Point(0, hgs.getSize()), 1);
+            cami2 = camiMesCurt(hgs, left, right, -1);
+            cami1 = camiMesCurt(hgs, up, down, 1);
         }
         return cami2 - cami1;
         //return 0;
     }
 
-    int camiMesCurt(HexGameStatus hgs, Point pIni, Point pFi, int p) {
-        PriorityQueue<Node> pq = new PriorityQueue<>(new ComparadorComplex()); // Preguntar Bernat!!!!!
-        pq.add(new Node(pIni, 0, pIni));
-        Node actual;
-        while (pq.poll() != null && !pq.poll().point.equals(pFi)) {
-            actual = pq.poll();
-            trobaVeins(hgs, actual, pq, p);
-
+    int camiMesCurt(HexGameStatus hgs, Node nIni, Node nFi, int p) {
+        // Problema: !!!! Pot utilitzar les cantonades per trobar el més curt aaaaaAAAA no pot ser això NOMES LA PRIMERAAAA
+        // Hem decidit tenir els nodes en una PriorityQueue 
+     //   System.out.println("Estic cami mes curt");
+        PriorityQueue<Node> pq = new PriorityQueue<Node>(new ComparadorNode()); // Preguntar Bernat!!!!!
+        // Necessito tenir una llista de nodes visistats !!!
+        boolean[][] visitats = new boolean[11][11];
+        // Primera iteració
+        switch(nIni.corner){
+            case "L":
+              //  System.out.println("Left first");
+                for (int i = 0; i < mida; i++) {
+                    if (hgs.getPos(0, i) == p) {
+                       // System.out.println("esta ocupada "+ p);
+                        //System.out.println("afegeixo: 0 " + i);
+                        pq.add(new Node(new Point(0, i), 0, nIni));
+                    } else if (hgs.getPos(0, i) == 0) {
+                        //System.out.println("esta buida " );
+                        //System.out.println("afegeixo: 0 " + i);
+                        pq.add(new Node(new Point(0, i), 1, nIni));
+                    }
+                }                
+                break;
+            case "U":
+               // System.out.println("Up first");
+                for (int i = 0; i < mida; i++) {
+                    if (hgs.getPos(i, 0) == p) {
+                        pq.add(new Node(new Point(i, 0), 0, nIni));
+                    } else if (hgs.getPos(i, 0) == 0) {
+                        pq.add(new Node(new Point(i, 0), 1, nIni));
+                    }
+                }
+                break;
+            default:
+                System.out.println("Error en la crida de camiMesCurt");
         }
-        return 0;
-    }
-
-    private void trobaVeins(HexGameStatus hgs, Node actual, PriorityQueue<Node> pq, int p) {
-        if (actual.point.x == -1 && actual.point.y == 0) { // ESQUERRA
-            for (int i = 0; i < mida; i++) {
-                if (hgs.getPos(0, i) == p) {
-                    pq.add(new Node(new Point(0, i), actual.distance + 0, actual.point));
-                } else if (hgs.getPos(0, i) == 0) {
-                    pq.add(new Node(new Point(0, i), actual.distance + 1, actual.point));
+        Node actual = pq.poll();
+        while (actual != null && !actual.equals(nFi)) {
+            if(!actual.esCantonada()){
+                visitats[actual.point.x][actual.point.y] = true;
+              //  System.out.println("Visito el punt: " + actual.point.x +"  "+ actual.point.y + " dist: "+ actual.distance);
+                if(actual.point.x> 0 && !visitats[actual.point.x -1][actual.point.y]){
+                    if (hgs.getPos(actual.point.x - 1, actual.point.y) == p) {
+                //        System.out.println("afegeixo: " + (actual.point.x - 1) + " " + actual.point.y);
+                        pq.add(new Node(new Point(actual.point.x - 1, actual.point.y), actual.distance + 0, actual));
+                    } else if (hgs.getPos(actual.point.x - 1, actual.point.y) == 0) {
+                  //      System.out.println("afegeixo: " + (actual.point.x - 1) + " " + actual.point.y);
+                        pq.add(new Node(new Point(actual.point.x - 1, actual.point.y), actual.distance + 1, actual));
+                    }
+                }
+                //System.out.println("El primer ok");
+                
+                if(actual.point.y>0 && !visitats[actual.point.x][actual.point.y -1]){
+                    if (hgs.getPos(actual.point.x, actual.point.y - 1) == p) {
+                        //System.out.println("afegeixo: " + (actual.point.x) + " " + (actual.point.y-1));
+                        pq.add(new Node(new Point(actual.point.x, actual.point.y - 1), actual.distance + 0, actual));
+                    } else if (hgs.getPos(actual.point.x, actual.point.y-1) == 0) {
+                        //System.out.println("afegeixo: " + (actual.point.x) + " " + (actual.point.y - 1));
+                        pq.add(new Node(new Point(actual.point.x, actual.point.y - 1), actual.distance + 1, actual));
+                    }
+                }
+                //System.out.println("Segon ok  "+ (actual.point.x+1)+ " "+ actual.point.y);
+                if ((actual.point.x+1) < mida && !visitats[actual.point.x + 1][actual.point.y]) {
+                    if (hgs.getPos(actual.point.x + 1, actual.point.y) == p) {
+                  //      System.out.println("afegeixo: " + (actual.point.x+1) + " " + (actual.point.y ));
+                        pq.add(new Node(new Point(actual.point.x + 1, actual.point.y), actual.distance + 0, actual));
+                    } else if (hgs.getPos(actual.point.x + 1, actual.point.y) == 0) {
+                    //    System.out.println("afegeixo: " + (actual.point.x+1) + " " + (actual.point.y));
+                        pq.add(new Node(new Point(actual.point.x + 1, actual.point.y), actual.distance + 1, actual));
+                    }
+                }
+                //System.out.println("Tercer ok");
+                if ((actual.point.y+1) < mida && !visitats[actual.point.x][actual.point.y+1]) {
+                    if (hgs.getPos(actual.point.x, actual.point.y+1) == p) {
+                       // System.out.println("afegeixo: " + (actual.point.x) + " " + (actual.point.y + 1));
+                        pq.add(new Node(new Point(actual.point.x, actual.point.y+1), actual.distance + 0, actual));
+                    } else if (hgs.getPos(actual.point.x, actual.point.y+1) == 0) {
+                       // System.out.println("afegeixo: " + (actual.point.x) + " " + (actual.point.y + 1));
+                        pq.add(new Node(new Point(actual.point.x, actual.point.y+1), actual.distance + 1, actual));
+                    }
+                }
+                //System.out.println("Quart ok");
+                if (actual.point.x > 0 && actual.point.y < mida-1 && !visitats[actual.point.x - 1][actual.point.y + 1]) {
+                    if (hgs.getPos(actual.point.x - 1, actual.point.y + 1) == p) {
+                  //      System.out.println("afegeixo: " + (actual.point.x-1) + " " + (actual.point.y + 1));
+                        pq.add(new Node(new Point(actual.point.x - 1, actual.point.y + 1), actual.distance + 0, actual));
+                    } else if (hgs.getPos(actual.point.x - 1, actual.point.y + 1) == 0) {
+                    //    System.out.println("afegeixo: " + (actual.point.x-1) + " " + (actual.point.y + 1));
+                        pq.add(new Node(new Point(actual.point.x - 1, actual.point.y + 1), actual.distance + 1, actual));
+                    }
+                }
+                //System.out.println("5 ok");
+                if (actual.point.y > 0 && actual.point.x < mida-1 && !visitats[actual.point.x + 1][actual.point.y - 1]) {
+                    if (hgs.getPos(actual.point.x + 1, actual.point.y - 1) == p) {
+                  //      System.out.println("afegeixo: " + (actual.point.x+1) + " " + (actual.point.y - 1));
+                        pq.add(new Node(new Point(actual.point.x + 1, actual.point.y - 1), actual.distance + 0, actual));
+                    } else if (hgs.getPos(actual.point.x + 1, actual.point.y -1) == 0) {
+                    //    System.out.println("afegeixo: " + (actual.point.x+1) + " " + (actual.point.y - 1));
+                        pq.add(new Node(new Point(actual.point.x + 1, actual.point.y - 1), actual.distance + 1, actual));
+                    }
+                }
+               // System.out.println("6 ok");
+                if (actual.point.x == mida-1){
+                    pq.add(new Node("R", actual.distance, actual));
+                }
+                if (actual.point.y == mida-1){
+                    pq.add(new Node("D", actual.distance, actual));
                 }
             }
-        } else if (actual.point.x == 0 && actual.point.y == -1) { // A DALT
-            for (int i = 0; i < mida; i++) {
-                if (hgs.getPos(0, i) == p) {
-                    pq.add(new Node(new Point(i, 0), actual.distance + 0, actual.point));
-                } else if (hgs.getPos(i, 0) == 0) {
-                    pq.add(new Node(new Point(i, 0), actual.distance + 1, actual.point));
-                }
-            }
-
-        } else {
-            if(hgs.getPos(actual.point.x-1, actual.point.y) == p){
-                 pq.add(new Node(new Point(actual.point.x-1,actual.point.y),actual.distance+0,actual.point));
-            } else if (hgs.getPos(actual.point.x-1, actual.point.y) == 0){
-                 pq.add(new Node(new Point(actual.point.x-1,actual.point.y),actual.distance+1,actual.point));
-            }  
-            
-            if(hgs.getPos(actual.point.x, actual.point.y-1) == p){
-                 pq.add(new Node(new Point(actual.point.x,actual.point.y-1),actual.distance+0,actual.point));
-            } else if (hgs.getPos(actual.point.x-1, actual.point.y) == 0){
-                 pq.add(new Node(new Point(actual.point.x,actual.point.y-1),actual.distance+1,actual.point));
-            }  
-            
-            if(hgs.getPos(actual.point.x+1, actual.point.y+1) == p){
-                 pq.add(new Node(new Point(actual.point.x+1,actual.point.y+1),actual.distance+0,actual.point));
-            } else if (hgs.getPos(actual.point.x-1, actual.point.y+1) == 0){
-                 pq.add(new Node(new Point(actual.point.x+1,actual.point.y+1),actual.distance+1,actual.point));
-            }  
-            
-            if(hgs.getPos(actual.point.x+1, actual.point.y) == p){
-                 pq.add(new Node(new Point(actual.point.x+1,actual.point.y),actual.distance+0,actual.point));
-            } else if (hgs.getPos(actual.point.x+1, actual.point.y) == 0){
-                 pq.add(new Node(new Point(actual.point.x+1,actual.point.y),actual.distance+1,actual.point));
-            }
-            
-            if(hgs.getPos(actual.point.x-1, actual.point.y+1) == p){
-                 pq.add(new Node(new Point(actual.point.x-1,actual.point.y+1),actual.distance+0,actual.point));
-            } else if (hgs.getPos(actual.point.x-1, actual.point.y+1) == 0){
-                 pq.add(new Node(new Point(actual.point.x-1,actual.point.y+1),actual.distance+1,actual.point));
-            }  
-            
-            if(hgs.getPos(actual.point.x, actual.point.y-1) == p){
-                 pq.add(new Node(new Point(actual.point.x,actual.point.y-1),actual.distance+0,actual.point));
-            } else if (hgs.getPos(actual.point.x, actual.point.y) == 0){
-                 pq.add(new Node(new Point(actual.point.x,actual.point.y-1),actual.distance+1,actual.point));
-            }  
-        } 
+            actual = pq.poll();
+        }
+        return actual.distance;
     }
 
     /**
@@ -140,7 +190,7 @@ public class Jugador1 implements IPlayer, IAuto {
             Point punt = millorJugada.getPoint();
             if (newHgs.getPos(punt.x, punt.y) == 0) {
                 newHgs.placeStone(punt);
-                System.out.println("LA m");
+                //System.out.println("LA m");
                 if (newHgs.isGameOver()) {
                     return new PlayerMove(punt, nodesExplored, profunditat, search); // canviar el 0 i la profunditat, esta malament
                 } else {
@@ -180,7 +230,7 @@ public class Jugador1 implements IPlayer, IAuto {
                         int h = minimazing(newHgs, profunditat, alpha, beta);
                         //System.out.println("Per la columna: " + i + " tenim heuristica: " + h);
                         if (h > maxEval || primer) {
-                            System.out.println("Aquesta es millor");
+                           // System.out.println("Aquesta es millor");
                             primer = false;
                             maxEval = h;
                             jugada = new PlayerMove(punt, nodesExplored, profunditat, search);
@@ -189,7 +239,7 @@ public class Jugador1 implements IPlayer, IAuto {
                             alpha = h;
                         }
                         if (alpha > beta) {
-                            System.out.println("Fins aqui!");
+                           // System.out.println("Fins aqui!");
                             break;
                         }
                     }
@@ -316,7 +366,7 @@ public class Jugador1 implements IPlayer, IAuto {
         player = hgs.getCurrentPlayerColor();
         mida = hgs.getSize();
         nodesExplored = 0;
-        System.out.println(hgs.getPos(1, 0));
+     //   System.out.println(hgs.getPos(1, 0));
         if (id) {
             int prof = 1;
             while (!fi) {

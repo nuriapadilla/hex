@@ -5,7 +5,7 @@
 package edu.upc.epsevg.prop.hex.players;
 
 import java.awt.Point;
-import java.util.Comparator;
+import java.util.Objects;
 
 /**
  *
@@ -13,20 +13,42 @@ import java.util.Comparator;
  */
 class Node {
 
-    public Node(Point point, int distance, Point anterior) {
+    String corner;
+    Point point;
+    int distance;
+    Node anterior;
+
+    public Node(Point point, int distance, Node anterior) {
         this.point = point;
         this.distance = distance;
         this.anterior = anterior;
     }
-    Point point;
-    int distance;
-    Point anterior;
+    
+    public Node(String corner, int distance, Node anterior){
+        this.corner = corner;
+        this.distance = distance;
+        this.anterior = anterior;
+    }
+    public boolean esCantonada(){
+        return this.corner!=null;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Node other = (Node) obj;
+        if (!Objects.equals(this.corner, other.corner)) {
+            return false;
+        }
+        return Objects.equals(this.point, other.point);
+    }
 }
 
-class ComparadorComplex implements Comparator<Node>{
-    @Override
-    public int compare(Node o1, Node o2) {
-        return Integer.compare(o1.distance, o1.distance);
-    }
-    
-}
