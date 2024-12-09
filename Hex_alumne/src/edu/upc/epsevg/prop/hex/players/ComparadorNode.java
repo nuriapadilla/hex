@@ -17,6 +17,6 @@ public class ComparadorNode implements Comparator<Node>{
     
     @Override
     public int compare(Node o1, Node o2) {
-        return Integer.compare(o1.distance, o1.distance);
+        return Integer.compare(o1.distance, o2.distance);
     }
 }

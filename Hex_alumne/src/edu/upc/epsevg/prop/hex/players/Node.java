@@ -11,12 +11,12 @@ import java.util.Objects;
  *
  * @author nuria
  */
-class Node {
+public class Node {
 
-    String corner;
-    Point point;
-    int distance;
-    Node anterior;
+    public String corner;
+    public Point point;
+    public int distance;
+    public Node anterior;
 
     public Node(Point point, int distance, Node anterior) {
         this.point = point;
@@ -35,6 +35,10 @@ class Node {
 
     @Override
     public boolean equals(Object obj) {
+        final Node other = (Node) obj;
+        if(other.esCantonada() && this.esCantonada() && other.corner==this.corner){
+            return true;
+        }
         if (this == obj) {
             return true;
         }
@@ -44,7 +48,7 @@ class Node {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Node other = (Node) obj;
+        
         if (!Objects.equals(this.corner, other.corner)) {
             return false;
         }
