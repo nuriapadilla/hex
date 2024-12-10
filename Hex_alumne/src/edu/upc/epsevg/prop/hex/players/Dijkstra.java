@@ -15,7 +15,7 @@ import java.util.Vector;
  */
 public class Dijkstra {
 
-    public Dijkstra(int mida, HexGameStatus hgs) {
+    public Dijkstra(int mida, MyStatus hgs) {
         this.mida = mida;
         this.hgs = hgs;
     }
