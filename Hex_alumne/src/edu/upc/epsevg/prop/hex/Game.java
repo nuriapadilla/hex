@@ -30,9 +30,7 @@ public class Game {
                 
                 IPlayer player2 = new HumanPlayer("Human");
                                 
-                IPlayer player3 = new Jugador1(true, 4);
-                
-                
+                IPlayer player3 = new Jugador1(true, 3);
                 
                 new Board(player3 , player1, 11 /*mida*/,  10/*s*/, false);
              }
