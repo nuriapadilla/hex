@@ -23,7 +23,7 @@ public class Jugador1 implements IPlayer, IAuto {
     boolean fi = false;
     boolean iniMillorJugada = false;
     PlayerMove millorJugada;
-    long nodesExplored;
+    long nodesExplored = 0;
     int player;
     int mida;
 
@@ -81,7 +81,7 @@ public class Jugador1 implements IPlayer, IAuto {
                 if (newHgs.isGameOver()) {
                     return new PlayerMove(punt, nodesExplored, profunditat, search); // canviar el 0 i la profunditat, esta malament
                 } else {
-                    int h = minimazing(newHgs, profunditat, alpha, beta);
+                    int h = minimazing(newHgs, profunditat-1, alpha, beta);
                     if (h > maxEval || primer) {
                         maxEval = h;
                         primer = false;
@@ -115,7 +115,7 @@ public class Jugador1 implements IPlayer, IAuto {
                     if (newHgs.isGameOver()) {
                         return new PlayerMove(punt, nodesExplored, profunditat, search); // canviar el 0 i la profunditat, esta malament
                     } else {
-                        int h = minimazing(newHgs, profunditat, alpha, beta);
+                        int h = minimazing(newHgs, profunditat-1, alpha, beta);
                         //System.out.println("Per la columna: " + i + " tenim heuristica: " + h);
                         if (h > maxEval || primer) {
                            // System.out.println("Aquesta es millor");
@@ -252,7 +252,6 @@ public class Jugador1 implements IPlayer, IAuto {
 
     @Override
     public PlayerMove move(HexGameStatus hgs) {
-        // hgs.getMoves(); // això perq ho fem ????????
         player = hgs.getCurrentPlayerColor();
         mida = hgs.getSize();
         nodesExplored = 0;

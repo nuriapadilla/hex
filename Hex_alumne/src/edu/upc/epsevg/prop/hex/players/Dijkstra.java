@@ -102,7 +102,7 @@ public class Dijkstra {
 
     public int camiMesCurt(Node nIni, Node nFi, int p) {
         // Hem decidit tenir els nodes en una PriorityQueue 
-        System.out.println("Estic cami mes curt i el meu node ini: " + nIni.corner + " node fi: " + nFi.corner);
+        //System.out.println("Estic cami mes curt i el meu node ini: " + nIni.corner + " node fi: " + nFi.corner);
         PriorityQueue<Node> pq = new PriorityQueue<Node>(new ComparadorNode());
 
         boolean[][] visitats = new boolean[11][11];
