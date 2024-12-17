@@ -26,15 +26,17 @@ public class Jugador1 implements IPlayer, IAuto {
     int player;
     int mida;
     HashMap<MyStatus, Point> map;
-
+    HashMap<MyStatus, int> hmap;
     public Jugador1(boolean i, int p) {
         id = i;
         profMax = p;
         map = new HashMap<>();
+        hmap = new HashMap<>();
     }
 
     public int heuristica(MyStatus hgs) {
         nodesExplored = nodesExplored + 1;
+        if(hmap.containsKey(hgs)) return hmap.get(hgs);
         int cami1;
         int cami2;
         Node left = new Node("L", 0, null);
@@ -50,6 +52,7 @@ public class Jugador1 implements IPlayer, IAuto {
             cami1 = di.camiMesCurt(left, right, 1);
             cami2 = di.camiMesCurt(up, down, -1);
         }
+        hmap.putAll(hgs, cami1-cami2);
         return cami1 - cami2;
         //return 0;
     }
@@ -63,7 +66,7 @@ public class Jugador1 implements IPlayer, IAuto {
      * @return Columna òptima per al moviment.
      */
     public PlayerMove minimax(MyStatus hgs, int profunditat) { // LA PRINCIPAL
-        System.out.println("Estic al minimax");
+        //System.out.println("Estic al minimax");
         if (fi) {
             return null;
         }
@@ -76,10 +79,10 @@ public class Jugador1 implements IPlayer, IAuto {
         Point primerajugada = null;
         // Si tenim millor jiugada previa, prioritzem exprorar-la
         if (map.containsKey(hgs)) {
-            System.out.println("Millor jugada");
+            //System.out.println("Millor jugada");
             Point punt = map.get(hgs);
             primerajugada = punt;
-            System.out.println(punt);
+            //System.out.println(punt);
             MyStatus newHgs = new MyStatus(hgs);
             if (newHgs.getPos(punt.x, punt.y) == 0) {
                 newHgs.placeStone(punt);
@@ -141,7 +144,7 @@ public class Jugador1 implements IPlayer, IAuto {
             }
         }
         if (maxEval == Integer.MIN_VALUE) {
-            System.out.println("Perdo 100%");
+            //System.out.println("Perdo 100%");
         }
         map.put(hgs, jugada.getPoint());
         return jugada;
@@ -339,7 +342,7 @@ public class Jugador1 implements IPlayer, IAuto {
             int prof = 1;
             while (!fi) {
                 nodesExplored = 0;
-                System.out.println("Miro la prof: " + prof);
+                //System.out.println("Miro la prof: " + prof);
                 // TODO: si ja veiem que guanyem amb tot o perdem a tot fem un if guarro i tallem, no cal seguir amb més profunditat
                 MyStatus mhgs = new MyStatus(hgs);
                 PlayerMove newJugada = minimax(mhgs, prof);
