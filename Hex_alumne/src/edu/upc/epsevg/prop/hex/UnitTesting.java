@@ -9,6 +9,8 @@ import edu.upc.epsevg.prop.hex.HexGameStatus;
 import edu.upc.epsevg.prop.hex.PlayerType;
 import edu.upc.epsevg.prop.hex.players.ComparadorNode;
 import edu.upc.epsevg.prop.hex.players.Dijkstra;
+import edu.upc.epsevg.prop.hex.players.MyStatus;
+
 import edu.upc.epsevg.prop.hex.players.Node;
 import edu.upc.epsevg.prop.hex.players.ProfeGameStatus2;
 import edu.upc.epsevg.prop.hex.players.ProfeGameStatus3;
@@ -79,7 +81,7 @@ public class UnitTesting {
         Node up = new Node("U", 0, null);
         Node down = new Node("D", Integer.MAX_VALUE, null);
         //System.out.println(hgs.toString());
-        Dijkstra di = new Dijkstra(11, hgs);
+        Dijkstra di = new Dijkstra(11, new MyStatus(hgs));
         int player = -1;
         if (player == 1) {
             cami2 = di.camiMesCurt(left, right, 1);

@@ -26,7 +26,7 @@ public class Jugador1 implements IPlayer, IAuto {
     int player;
     int mida;
     HashMap<MyStatus, Point> map;
-    HashMap<MyStatus, int> hmap;
+    HashMap<MyStatus, Integer> hmap;
     public Jugador1(boolean i, int p) {
         id = i;
         profMax = p;
@@ -52,7 +52,7 @@ public class Jugador1 implements IPlayer, IAuto {
             cami1 = di.camiMesCurt(left, right, 1);
             cami2 = di.camiMesCurt(up, down, -1);
         }
-        hmap.putAll(hgs, cami1-cami2);
+        hmap.put(hgs, cami1-cami2);
         return cami1 - cami2;
         //return 0;
     }
