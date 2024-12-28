@@ -12,7 +12,7 @@ import java.awt.Point;
  * @author bruna
  */
 public class MyStatus extends HexGameStatus {
-     int[][][] zorbit;
+     static int[][][] zorbit = null;
      int hash;
 
     @Override
@@ -47,39 +47,37 @@ public class MyStatus extends HexGameStatus {
         super(hgs);
         int mida = hgs.getSize();
         hash = 0;
-        zorbit = new int[mida][mida][3];
-        for(int i=0; i<mida; i++){
-            for (int j=0; j<mida; j++){
-                for (int k=0;k<3;k++){
-                    int randomNumber = (int) (Math.random() * Integer.MAX_VALUE);
-                    zorbit[i][j][k] = randomNumber;
-                    
-                }
-            }
-        }
+        initZorbit(mida);
         for(int i=0; i<mida;i++){
             for(int j=0;j<mida;j++){
-                hash^= zorbit[i][j][1];
+                int aux = hgs.getPos(i, j);
+                hash^= zorbit[i][j][aux+1];
         }
         }
     }
     public MyStatus(int mida) {
         super(mida);
         hash = 0;
-        zorbit = new int[mida][mida][3];
-        for(int i=0; i<mida; i++){
-            for (int j=0; j<mida; j++){
-                for (int k=0;k<3;k++){
-                    int randomNumber = (int) (Math.random() * Integer.MAX_VALUE);
-                    zorbit[i][j][k] = randomNumber;
-                    
-                }
-            }
-        }
+        initZorbit(mida);
         for(int i=0; i<mida;i++){
             for(int j=0;j<mida;j++){
                 hash^= zorbit[i][j][1];
         }
+        }
+    }
+    
+    private static void initZorbit(int mida){
+        if(zorbit == null){
+            zorbit = new int[mida][mida][3];
+            for (int i = 0; i < mida; i++) {
+                for (int j = 0; j < mida; j++) {
+                    for (int k = 0; k < 3; k++) {
+                        int randomNumber = (int) (Math.random() * Integer.MAX_VALUE);
+                        zorbit[i][j][k] = randomNumber;
+
+                    }
+                }
+            }
         }
     }
     
