@@ -5,6 +5,7 @@ package edu.upc.epsevg.prop.hex;
 import edu.upc.epsevg.prop.hex.players.H_E_X_Player;
 import edu.upc.epsevg.prop.hex.players.HumanPlayer;
 import edu.upc.epsevg.prop.hex.players.Jugador1;
+import edu.upc.epsevg.prop.hex.players.Jugador2;
 import edu.upc.epsevg.prop.hex.players.JugadorEstrella;
 import edu.upc.epsevg.prop.hex.players.RandomPlayer;
 import java.lang.ref.WeakReference;
