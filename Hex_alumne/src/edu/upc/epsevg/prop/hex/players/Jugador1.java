@@ -26,17 +26,15 @@ public class Jugador1 implements IPlayer, IAuto {
     int player;
     int mida;
     HashMap<MyStatus, Point> map;
-    HashMap<MyStatus, Integer> hmap;
     public Jugador1(boolean i, int p) {
         id = i;
         profMax = p;
         map = new HashMap<>();
-        hmap = new HashMap<>();
     }
 
     public int heuristica(MyStatus hgs) {
         nodesExplored = nodesExplored + 1;
-        if(hmap.containsKey(hgs)) return hmap.get(hgs);
+
         int cami1;
         int cami2;
         Node left = new Node("L", 0, null);
@@ -52,7 +50,6 @@ public class Jugador1 implements IPlayer, IAuto {
             cami1 = di.camiMesCurt(left, right, 1);
             cami2 = di.camiMesCurt(up, down, -1);
         }
-        hmap.put(hgs, cami1-cami2);
         return cami1 - cami2;
         //return 0;
     }

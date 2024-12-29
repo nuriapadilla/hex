@@ -14,10 +14,10 @@ import java.util.HashMap;
 
 /**
  *
- * @author bruna
+ * @author nuria
  */
 public class JugadorEstrella implements IPlayer, IAuto {
-    
+
     boolean id;
     int profMax;
     boolean fi = false;
@@ -26,25 +26,23 @@ public class JugadorEstrella implements IPlayer, IAuto {
     int player;
     int mida;
     HashMap<MyStatus, Point> map;
-    HashMap<MyStatus, Integer> hmap;
     public JugadorEstrella(boolean i, int p) {
         id = i;
         profMax = p;
         map = new HashMap<>();
-        hmap = new HashMap<>();
     }
 
     public int heuristica(MyStatus hgs) {
         nodesExplored = nodesExplored + 1;
-        if(hmap.containsKey(hgs)) return hmap.get(hgs);
+
         int cami1;
         int cami2;
-        Node left = new Node("L", 0, null);
-        Node right = new Node("R", Integer.MAX_VALUE, null);
-        Node up = new Node("U", 0, null);
-        Node down = new Node("D", Integer.MAX_VALUE, null);
+        NodeEstrella left = new NodeEstrella("L", 0,0, null);
+        NodeEstrella right = new NodeEstrella("R", Integer.MAX_VALUE,0, null);
+        NodeEstrella up = new NodeEstrella("U", 0,0, null);
+        NodeEstrella down = new NodeEstrella("D", Integer.MAX_VALUE,0, null);
         //System.out.println(hgs.toString());
-        Dijkstra di = new Dijkstra(mida, hgs);
+        AEstrella di = new AEstrella(mida, hgs);
         if (player == 1) {
             cami2 = di.camiMesCurt(left, right, 1);
             cami1 = di.camiMesCurt(up, down, -1);
@@ -52,7 +50,6 @@ public class JugadorEstrella implements IPlayer, IAuto {
             cami1 = di.camiMesCurt(left, right, 1);
             cami2 = di.camiMesCurt(up, down, -1);
         }
-        hmap.put(hgs, cami1-cami2);
         return cami1 - cami2;
         //return 0;
     }
@@ -78,7 +75,7 @@ public class JugadorEstrella implements IPlayer, IAuto {
         SearchType search = id == true ? SearchType.MINIMAX_IDS : SearchType.MINIMAX;
         Point primerajugada = null;
         // Si tenim millor jiugada previa, prioritzem exprorar-la
-        if (map.containsKey(hgs)) {
+        if (map.containsKey(hgs) && map.get(hgs)!=null) {
             //System.out.println("Millor jugada");
             Point punt = map.get(hgs);
             primerajugada = punt;
@@ -172,7 +169,7 @@ public class JugadorEstrella implements IPlayer, IAuto {
         Point primerajugada = null;
         Point punt;
         MyStatus newHgs;
-        if (map.containsKey(hgs)) {
+        if (map.containsKey(hgs) && map.get(hgs)!=null ) {
             punt = map.get(hgs);
             primerajugada = punt;
             newHgs = new MyStatus(hgs);
@@ -269,7 +266,7 @@ public class JugadorEstrella implements IPlayer, IAuto {
         Point p = null;
         Point punt;
         Point primerajugada = null;
-        if (map.containsKey(hgs)) {
+        if (map.containsKey(hgs) && map.get(hgs)!=null) {
             punt = map.get(hgs);
             primerajugada = punt;
             newHgs = new MyStatus(hgs);
@@ -369,6 +366,6 @@ public class JugadorEstrella implements IPlayer, IAuto {
 
     @Override
     public String getName() {
-        return ("bondia");
+        return ("bondiaEstrella");
     }
 }

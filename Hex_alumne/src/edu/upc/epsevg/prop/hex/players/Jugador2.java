@@ -154,7 +154,7 @@ public class Jugador2 implements IPlayer, IAuto {
 
     Vector<Point> get20first(PriorityQueue<Eval> pq) {
         Vector<Point> sol = new Vector<>();
-        for (int i = 0; i < 10 && pq.peek() != null; i++) {
+        for (int i = 0; i < 50 && pq.peek() != null; i++) {
             sol.add(pq.poll().punt);
         }
         return sol;
