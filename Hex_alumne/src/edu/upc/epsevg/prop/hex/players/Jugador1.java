@@ -25,18 +25,17 @@ public class Jugador1 implements IPlayer, IAuto {
     long nodesExplored = 0;
     int player;
     int mida;
+    boolean virt;
     HashMap<MyStatus, Point> map;
-    HashMap<MyStatus, Integer> hmap;
-    public Jugador1(boolean i, int p) {
+    public Jugador1(boolean i, int p, boolean j) {
         id = i;
         profMax = p;
         map = new HashMap<>();
-        hmap = new HashMap<>();
+        virt = j;
     }
 
     public int heuristica(MyStatus hgs) {
         nodesExplored = nodesExplored + 1;
-        if(hmap.containsKey(hgs)) return hmap.get(hgs);
         int cami1;
         int cami2;
         Node left = new Node("L", 0, null);
@@ -44,7 +43,7 @@ public class Jugador1 implements IPlayer, IAuto {
         Node up = new Node("U", 0, null);
         Node down = new Node("D", Integer.MAX_VALUE, null);
         //System.out.println(hgs.toString());
-        Dijkstra di = new Dijkstra(mida, hgs);
+        Dijkstra di = new Dijkstra(mida, hgs, virt);
         if (player == 1) {
             cami2 = di.camiMesCurt(left, right, 1);
             cami1 = di.camiMesCurt(up, down, -1);
@@ -52,7 +51,6 @@ public class Jugador1 implements IPlayer, IAuto {
             cami1 = di.camiMesCurt(left, right, 1);
             cami2 = di.camiMesCurt(up, down, -1);
         }
-        hmap.put(hgs, cami1-cami2);
         return cami1 - cami2;
         //return 0;
     }
@@ -240,9 +238,6 @@ public class Jugador1 implements IPlayer, IAuto {
                 }
             }
         
-        if(p==null){
-            System.out.println("p es null");
-        }
         map.put(hgs, p);
         return minEval;
     }
@@ -369,6 +364,6 @@ public class Jugador1 implements IPlayer, IAuto {
 
     @Override
     public String getName() {
-        return ("bondia");
+        return ("Jugador 1");
     }
 }

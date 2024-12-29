@@ -5,6 +5,7 @@ package edu.upc.epsevg.prop.hex;
 import edu.upc.epsevg.prop.hex.players.H_E_X_Player;
 import edu.upc.epsevg.prop.hex.players.HumanPlayer;
 import edu.upc.epsevg.prop.hex.players.Jugador1;
+import edu.upc.epsevg.prop.hex.players.Jugador2;
 import edu.upc.epsevg.prop.hex.players.RandomPlayer;
 import java.lang.ref.WeakReference;
 
@@ -31,8 +32,9 @@ public class HeadlessGame {
 
         IPlayer player1 = new RandomPlayer("Paco");
         IPlayer player2 = new H_E_X_Player(6/*GB*/);                    
-        IPlayer player3 = new Jugador1(true, 2);
-        HeadlessGame game = new HeadlessGame(player3, player2, 11, 10/*s timeout*/, 15/*games*/);
+        IPlayer player3 = new Jugador1(true, 2, true);
+        IPlayer player4 = new Jugador2(true, 2, 50);
+        HeadlessGame game = new HeadlessGame(player4, player2, 11, 10/*s timeout*/, 3/*games*/);
         GameResult gr = game.start();
         System.out.println(gr);
 

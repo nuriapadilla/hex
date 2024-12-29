@@ -17,7 +17,7 @@ import java.util.Vector;
 
 /**
  *
- * @author nuria
+ * @author bruna i nuria
  */
 public class Jugador2 implements IPlayer, IAuto {
 
@@ -28,14 +28,30 @@ public class Jugador2 implements IPlayer, IAuto {
     long nodesExplored = 0;
     int player;
     int mida;
-    HashMap<MyStatus, Vector<Point>> map;
-
-    public Jugador2(boolean i, int p) {
+    int max;
+    
+    /**
+     * Constructor de la classe Jugador2.
+     *
+     * @param i identifica si es fa un minmax o un IDS (true = IDS, false = minmax).
+     * @param p la profunditat màxima per a les operacions d'exploració o cerca.
+     * @param max el valor màxim permès a l'hora d'explorar branques en l'estratègia del jugador.
+     */
+    public Jugador2(boolean i, int p, int max) {
         id = i;
         profMax = p;
-        map = new HashMap<>();
+        this.max = max;
     }
 
+    /**
+     * Calcula el valor heurístic de l'estat actual del joc basat en les
+     * distàncies més curtes entre nodes específics al tauler.
+     *
+     * @param hgs l'estat actual del tauler, representat per un objecte de tipus
+     * MyStatus.
+     * @return la diferència entre els camins més curts dels dos jugadors, que
+     * indica l'avantatge estratègic del jugador actual.
+     */
     public int heuristica(MyStatus hgs) {
         nodesExplored = nodesExplored + 1;
         int cami1;
@@ -45,7 +61,7 @@ public class Jugador2 implements IPlayer, IAuto {
         Node up = new Node("U", 0, null);
         Node down = new Node("D", Integer.MAX_VALUE, null);
         //System.out.println(hgs.toString());
-        Dijkstra di = new Dijkstra(mida, hgs);
+        Dijkstra di = new Dijkstra(mida, hgs, true);
         if (player == 1) {
             cami2 = di.camiMesCurt(left, right, 1);
             cami1 = di.camiMesCurt(up, down, -1);
@@ -54,19 +70,23 @@ public class Jugador2 implements IPlayer, IAuto {
             cami2 = di.camiMesCurt(up, down, -1);
         }
         return cami1 - cami2;
-        //return 0;
     }
 
     /**
-     * Implementa l'algorisme Minimax per calcular el millor moviment
-     * disponible.
+     * Aplica l'algorisme Minimax amb poda alpha-beta per determinar la millor
+     * jugada per al jugador actual, basant-se en l'estat del tauler.
      *
-     * @param hgs
-     * @param profunditat Profunditat restant a explorar.
-     * @return Columna òptima per al moviment.
+     * @param hgs l'estat actual del tauler de joc, representat per un objecte
+     * MyStatus.
+     * @param profunditat la profunditat màxima d'exploració de l'arbre de
+     * cerca.
+     * @param map una estructura de memòria cau (HashMap) que associa estats del
+     * tauler amb les millors jugades prèviament calculades per optimitzar la
+     * cerca.
+     * @return un objecte PlayerMove que conté la millor jugada trobada, el
+     * nombre de nodes explorats, la profunditat utilitzada i el tipus de cerca.
      */
-    public PlayerMove minimax(MyStatus hgs, int profunditat) { // LA PRINCIPAL
-        //System.out.println("Estic al minimax");
+    public PlayerMove minimax(MyStatus hgs, int profunditat,  HashMap<MyStatus, Vector<Point>> map ) { // LA PRINCIPAL
         if (fi) {
             return null;
         }
@@ -78,20 +98,17 @@ public class Jugador2 implements IPlayer, IAuto {
         PriorityQueue<Eval> pq = new PriorityQueue<>(Comparator.comparingInt((Eval e) -> e.heur).reversed());
         Point punt;
         SearchType search = id == true ? SearchType.MINIMAX_IDS : SearchType.MINIMAX;
-        // Si tenim millor jiugada previa, prioritzem exprorar-la
         if (map.containsKey(hgs)) {
-            //System.out.println("Fem només les 20 millors jugades - minimax");
             Vector<Point> punts = map.get(hgs);
             for (int i = 0; i < punts.size(); i++) {
                 punt = punts.get(i);
                 MyStatus newHgs = new MyStatus(hgs);
                 if (newHgs.getPos(punt) == 0) {
                     newHgs.placeStone(punt);
-                    //System.out.println("LA m");
                     if (newHgs.isGameOver()) {
                         return new PlayerMove(punt, nodesExplored, profunditat, search);
                     } else {
-                        int h = minimazing(newHgs, profunditat - 1, alpha, beta);
+                        int h = minimazing(newHgs, profunditat - 1, alpha, beta, map);
                         if (h > maxEval || primer) {
                             maxEval = h;
                             primer = false;
@@ -101,7 +118,6 @@ public class Jugador2 implements IPlayer, IAuto {
                             alpha = h;
                         }
                         if (alpha > beta) {
-                            // System.out.println("Poda");
                             return jugada;
                         }
                     }
@@ -115,20 +131,16 @@ public class Jugador2 implements IPlayer, IAuto {
                     if (fi) {
                         return null;
                     }
-                    // System.out.println("Evaluo la posició: " + i +" "+ j);
                     MyStatus newHgs = new MyStatus(hgs);
                     punt = new Point(i, j);
                     if (newHgs.getPos(i, j) == 0) {
                         newHgs.placeStone(punt);
-                        //map.put(newHgs, punt);
                         if (newHgs.isGameOver()) {
                             return new PlayerMove(punt, nodesExplored, profunditat, search); // canviar el 0 i la profunditat, esta malament
                         } else {
-                            int h = minimazing(newHgs, profunditat - 1, alpha, beta);
+                            int h = minimazing(newHgs, profunditat - 1, alpha, beta, map);
                             pq.add(new Eval(punt, h));
-                            //System.out.println("Per la columna: " + i + " tenim heuristica: " + h);
                             if (h > maxEval || primer) {
-                                // System.out.println("Aquesta es millor");
                                 primer = false;
                                 maxEval = h;
                                 jugada = new PlayerMove(punt, nodesExplored, profunditat, search);
@@ -137,7 +149,6 @@ public class Jugador2 implements IPlayer, IAuto {
                                 alpha = h;
                             }
                             if (alpha > beta) {
-                                //       System.out.println("Poda");
                                 break;
                             }
                         }
@@ -145,31 +156,50 @@ public class Jugador2 implements IPlayer, IAuto {
                 }
             }
             if (maxEval == Integer.MIN_VALUE) {
-                //System.out.println("Perdo 100%");
             }
-            map.put(hgs, get20first(pq));
+            map.put(hgs, getmaxfirst(pq));
         }
         return jugada;
     }
-
-    Vector<Point> get20first(PriorityQueue<Eval> pq) {
+    
+    /**
+     * Obté els punts amb les millors puntuacions de la cua de prioritats, fins
+     * a un màxim especificat.
+     *
+     * @param pq una cua de prioritats (PriorityQueue) que conté objectes de
+     * tipus Eval, ordenats segons el seu valor heurístic.
+     * @return un vector de punts (Vector<Point>) que representa les millors
+     * jugades seleccionades de la cua, fins al límit especificat per `max`.
+     */
+    Vector<Point> getmaxfirst(PriorityQueue<Eval> pq) {
         Vector<Point> sol = new Vector<>();
-        for (int i = 0; i < 10 && pq.peek() != null; i++) {
+        for (int i = 0; i < max && pq.peek() != null; i++) {
             sol.add(pq.poll().punt);
         }
         return sol;
     }
 
     /**
-     * Funció de suport per a Minimax: minimització dels valors heurístics.
+     * Calcula el valor mínim (minimització) per a un estat del joc mitjançant
+     * l'algorisme Minimax amb poda alpha-beta. Aquesta funció s'utilitza per
+     * simular les jugades del contrari i determinar la millor estratègia
+     * possible per al jugador actual.
      *
-     * @param hgs
-     * @param profunditat Profunditat restant a explorar.
-     * @param alpha Valor alfa per a la poda alfa-beta.
-     * @param beta Valor beta per a la poda alfa-beta.
-     * @return Valor heurístic mínim trobat.
+     * @param hgs l'estat actual del tauler, representat per un objecte
+     * MyStatus.
+     * @param profunditat la profunditat restant d'exploració de l'arbre de
+     * decisions.
+     * @param alpha el millor valor ja conegut per al jugador maximitzador (poda
+     * alpha).
+     * @param beta el millor valor ja conegut per al jugador minimitzador (poda
+     * beta).
+     * @param map una memòria cau (HashMap) que emmagatzema els millors
+     * moviments associats a estats prèviament calculats per optimitzar la
+     * cerca.
+     * @return el valor heurístic mínim per al jugador actual en aquest estat
+     * del joc.
      */
-    public int minimazing(MyStatus hgs, int profunditat, int alpha, int beta) {
+    public int minimazing(MyStatus hgs, int profunditat, int alpha, int beta,  HashMap<MyStatus, Vector<Point>> map ) {
         int minEval = Integer.MAX_VALUE;
         PriorityQueue<Eval> pq = new PriorityQueue<>(Comparator.comparingInt((Eval e) -> e.heur));
         if (fi) {
@@ -184,7 +214,6 @@ public class Jugador2 implements IPlayer, IAuto {
         Point punt;
         MyStatus newHgs;
         if (map.containsKey(hgs)) {
-            //System.out.println("Fem només les 20 millors jugades - mini");
             Vector<Point> punts = map.get(hgs);
             for (int i = 0; i < punts.size(); i++) {
                 punt = punts.get(i);
@@ -194,7 +223,7 @@ public class Jugador2 implements IPlayer, IAuto {
                     if (newHgs.isGameOver()) {
                         return Integer.MIN_VALUE;
                     } else {
-                        int h = maximazing(newHgs, profunditat - 1, alpha, beta);
+                        int h = maximazing(newHgs, profunditat - 1, alpha, beta, map);
                         if (h < minEval) {
                             minEval = h;
                             p = punt;
@@ -205,7 +234,6 @@ public class Jugador2 implements IPlayer, IAuto {
                                 beta = h;
                             }
                             if (beta < alpha) {
-                                //             System.out.println("Poda");
                                 return minEval;
                             }
                         }
@@ -225,7 +253,7 @@ public class Jugador2 implements IPlayer, IAuto {
                         if (newHgs.isGameOver()) {
                             return Integer.MIN_VALUE;
                         } else {
-                            int h = maximazing(newHgs, profunditat - 1, alpha, beta);
+                            int h = maximazing(newHgs, profunditat - 1, alpha, beta, map);
                             pq.add(new Eval(punt, h));
                             if (h < minEval) {
                                 minEval = h;
@@ -237,7 +265,6 @@ public class Jugador2 implements IPlayer, IAuto {
                                     beta = h;
                                 }
                                 if (beta < alpha) {
-                                    //             System.out.println("Poda");
                                     break;
                                 }
                             }
@@ -247,7 +274,7 @@ public class Jugador2 implements IPlayer, IAuto {
                         break;
                     }
                 }
-                map.put(hgs, get20first(pq));
+                map.put(hgs, getmaxfirst(pq));
             }
 
         }
@@ -256,15 +283,25 @@ public class Jugador2 implements IPlayer, IAuto {
     }
 
     /**
-     * Funció de suport per a Minimax: maximització dels valors heurístics.
+     * Calcula el valor màxim (maximització) per a un estat del joc mitjançant
+     * l'algorisme Minimax amb poda alpha-beta. Aquesta funció representa les
+     * jugades òptimes per al jugador actual.
      *
-     * @param hgs
-     * @param profunditat Profunditat restant a explorar.
-     * @param alpha Valor alfa per a la poda alfa-beta.
-     * @param beta Valor beta per a la poda alfa-beta.
-     * @return Valor heurístic màxim trobat.
+     * @param hgs l'estat actual del tauler, representat per un objecte
+     * MyStatus.
+     * @param profunditat la profunditat restant d'exploració de l'arbre de
+     * decisions.
+     * @param alpha el millor valor ja conegut per al jugador maximitzador (poda
+     * alpha).
+     * @param beta el millor valor ja conegut per al jugador minimitzador (poda
+     * beta).
+     * @param map una memòria cau (HashMap) que emmagatzema els millors
+     * moviments associats a estats prèviament calculats per optimitzar la
+     * cerca.
+     * @return el valor heurístic màxim per al jugador actual en aquest estat
+     * del joc.
      */
-    public int maximazing(MyStatus hgs, int profunditat, int alpha, int beta) {
+    public int maximazing(MyStatus hgs, int profunditat, int alpha, int beta,  HashMap<MyStatus, Vector<Point>> map ) {
         int maxEval = Integer.MIN_VALUE;
         PriorityQueue<Eval> pq = new PriorityQueue<>(Comparator.comparingInt((Eval e) -> e.heur).reversed());
         if (fi) {
@@ -290,7 +327,7 @@ public class Jugador2 implements IPlayer, IAuto {
                     if (newHgs.isGameOver()) {
                         return Integer.MAX_VALUE;
                     } else {
-                        int h = minimazing(newHgs, profunditat - 1, alpha, beta);
+                        int h = minimazing(newHgs, profunditat - 1, alpha, beta, map);
                         if (h > maxEval) {
                             maxEval = h;
                             p = punt;
@@ -319,7 +356,7 @@ public class Jugador2 implements IPlayer, IAuto {
                             //System.out.println("guanyo");
                             return Integer.MAX_VALUE;
                         } else {
-                            int h = minimazing(newHgs, profunditat - 1, alpha, beta);
+                            int h = minimazing(newHgs, profunditat - 1, alpha, beta, map);
                             pq.add(new Eval(punt, h));
                             if (h > maxEval) {
                                 maxEval = h;
@@ -339,14 +376,14 @@ public class Jugador2 implements IPlayer, IAuto {
                 }
 
             }
-            map.put(hgs, get20first(pq));
+            map.put(hgs, getmaxfirst(pq));
         }
         return maxEval;
     }
 
     @Override
-    public PlayerMove move(HexGameStatus hgs
-    ) {
+    public PlayerMove move(HexGameStatus hgs) {
+        HashMap<MyStatus, Vector<Point>> map = new HashMap<>(); ;
         player = hgs.getCurrentPlayerColor();
         mida = hgs.getSize();
         nodesExplored = 0;
@@ -358,7 +395,7 @@ public class Jugador2 implements IPlayer, IAuto {
                 System.out.println("Miro la prof: " + prof);
                 // TODO: si ja veiem que guanyem amb tot o perdem a tot fem un if guarro i tallem, no cal seguir amb més profunditat
                 MyStatus mhgs = new MyStatus(hgs);
-                PlayerMove newJugada = minimax(mhgs, prof);
+                PlayerMove newJugada = minimax(mhgs, prof, map);
                 if (!fi) {
                     millorJugada = newJugada;
                 }
@@ -367,7 +404,7 @@ public class Jugador2 implements IPlayer, IAuto {
             fi = false;
         } else {
             MyStatus mhgs = new MyStatus(hgs);
-            millorJugada = minimax(mhgs, profMax);
+            millorJugada = minimax(mhgs, profMax, map);
         }
         return millorJugada;
         //PlayerMove bb = new PlayerMove(new);
@@ -382,7 +419,7 @@ public class Jugador2 implements IPlayer, IAuto {
 
     @Override
     public String getName() {
-        return ("bondia");
+        return ("Jugador 2");
     }
 
 }
