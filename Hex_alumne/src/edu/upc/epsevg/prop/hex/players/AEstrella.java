@@ -23,17 +23,17 @@ public class AEstrella {
     private final int mida;
     HexGameStatus hgs;
 
-    private float cost(Point P, NodeEstrella nIni, NodeEstrella nFi) {
+    private float preu(Point P, NodeEstrella nIni, NodeEstrella nFi) {
         // mirem si va d'esquerra a dreta; left right
-        Node left = new Node("L", 0, null);
-        Node right = new Node("R", Integer.MAX_VALUE, null);
-        Node up = new Node("U", 0, null);
-        Node down = new Node("D", Integer.MAX_VALUE, null);
-        float c = 0.0f;
-        if(equals.nIni(left) && equals.nFi(right)){
+        NodeEstrella left = new NodeEstrella("L", 0,0, null);
+        NodeEstrella right = new NodeEstrella("R", Integer.MAX_VALUE,0, null);
+        NodeEstrella up = new NodeEstrella("U", 0, 0,null);
+        NodeEstrella down = new NodeEstrella("D", Integer.MAX_VALUE, 0,null);
+        float c;
+        if(nIni.equals(left) && nFi.equals(right)){
             c = (mida - P.x) / 11.0f;  // Amb un ".0", el càlcul és en float
         } else {
-            //c = (mida - P.y) / mida()float;
+            c = (mida - P.y) / 11.0f;
         }return c;
         
     }
@@ -121,6 +121,7 @@ public class AEstrella {
 
         boolean[][] visitats = new boolean[11][11];
         // Primera iteració
+        Point pp;
         switch (nIni.corner) {
             case "L":
                 //  System.out.println("Left first");
@@ -128,11 +129,13 @@ public class AEstrella {
                     if (hgs.getPos(0, i) == p) {
                         // System.out.println("esta ocupada "+ p);
                         //System.out.println("afegeixo: 0 " + i);
-                        pq.add(new NodeEstrella(new Point(0, i), 0, nIni));
+                        pp = new Point(0, i);
+                        pq.add(new NodeEstrella(pp, 0,preu(pp,nIni,nFi), nIni));
                     } else if (hgs.getPos(0, i) == 0) {
                         //System.out.println("esta buida " );
                         //System.out.println("afegeixo: 0 " + i);
-                        pq.add(new NodeEstrella(new Point(0, i), 1, nIni));
+                        pp= new Point(0, i);
+                        pq.add(new NodeEstrella(pp, 1,preu(pp,nIni,nFi), nIni));
                     }
                 }
                 break;
@@ -140,9 +143,11 @@ public class AEstrella {
                 // System.out.println("Up first");
                 for (int i = 0; i < mida; i++) {
                     if (hgs.getPos(i, 0) == p) {
-                        pq.add(new NodeEstrella(new Point(i, 0), 0, nIni));
+                        pp = new Point(i, 0);
+                        pq.add(new NodeEstrella(pp, 0,preu(pp,nIni,nFi), nIni));
                     } else if (hgs.getPos(i, 0) == 0) {
-                        pq.add(new NodeEstrella(new Point(i, 0), 1, nIni));
+                        pp = new Point(i, 0);
+                        pq.add(new NodeEstrella(pp, 1,preu(pp,nIni,nFi), nIni));
                     }
                 }
                 break;
@@ -188,17 +193,17 @@ public class AEstrella {
                     String c = costat(t);
                     switch (c) {
                         case "R":
-                            pq.add(new NodeEstrella("R", actual.distance, actual));
+                            pq.add(new NodeEstrella("R", actual.distance,0, actual));
                             break;
                         case "D":
-                            pq.add(new NodeEstrella("D", actual.distance, actual));
+                            pq.add(new NodeEstrella("D", actual.distance,0, actual));
                             break;
                         default:
                             if (!visitats[t.x][t.y]) {
                                 if (hgs.getPos(t) == p) {
-                                    pq.add(new NodeEstrella(t, actual.distance + 0, actual));
+                                    pq.add(new NodeEstrella(t, actual.distance + 0,0, actual));
                                 } else if (hgs.getPos(t) == 0) {
-                                    pq.add(new NodeEstrella(t, actual.distance + 1, actual));
+                                    pq.add(new NodeEstrella(t, actual.distance + 1,0, actual));
                                 }
                             }
                     }

@@ -14,10 +14,10 @@ import java.util.HashMap;
 
 /**
  *
- * @author nuria
+ * @author bruna
  */
-public class Jugador1 implements IPlayer, IAuto {
-
+public class JugadorEstrella implements IPlayer, IAuto {
+    
     boolean id;
     int profMax;
     boolean fi = false;
@@ -27,7 +27,7 @@ public class Jugador1 implements IPlayer, IAuto {
     int mida;
     HashMap<MyStatus, Point> map;
     HashMap<MyStatus, Integer> hmap;
-    public Jugador1(boolean i, int p) {
+    public JugadorEstrella(boolean i, int p) {
         id = i;
         profMax = p;
         map = new HashMap<>();
@@ -78,7 +78,7 @@ public class Jugador1 implements IPlayer, IAuto {
         SearchType search = id == true ? SearchType.MINIMAX_IDS : SearchType.MINIMAX;
         Point primerajugada = null;
         // Si tenim millor jiugada previa, prioritzem exprorar-la
-        if (map.containsKey(hgs) && map.get(hgs)!=null) {
+        if (map.containsKey(hgs)) {
             //System.out.println("Millor jugada");
             Point punt = map.get(hgs);
             primerajugada = punt;
@@ -172,7 +172,7 @@ public class Jugador1 implements IPlayer, IAuto {
         Point primerajugada = null;
         Point punt;
         MyStatus newHgs;
-        if (map.containsKey(hgs) && map.get(hgs)!=null ) {
+        if (map.containsKey(hgs)) {
             punt = map.get(hgs);
             primerajugada = punt;
             newHgs = new MyStatus(hgs);
@@ -269,7 +269,7 @@ public class Jugador1 implements IPlayer, IAuto {
         Point p = null;
         Point punt;
         Point primerajugada = null;
-        if (map.containsKey(hgs) && map.get(hgs)!=null) {
+        if (map.containsKey(hgs)) {
             punt = map.get(hgs);
             primerajugada = punt;
             newHgs = new MyStatus(hgs);

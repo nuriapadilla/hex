@@ -12,31 +12,35 @@ import java.util.Objects;
  * @author bruna
  */
 public class NodeEstrella {
-    
+
     public String corner;
     public Point point;
     public int distance;
     public NodeEstrella anterior;
+    public float cost;
 
-    public NodeEstrella(Point point, int distance, NodeEstrella anterior) {
+    public NodeEstrella(Point point, int distance, float cost, NodeEstrella anterior) {
         this.point = point;
         this.distance = distance;
         this.anterior = anterior;
+        this.cost = cost;
     }
-    
-    public NodeEstrella(String corner, int distance, NodeEstrella anterior){
+
+    public NodeEstrella(String corner, int distance, float cost, NodeEstrella anterior) {
         this.corner = corner;
         this.distance = distance;
         this.anterior = anterior;
+        this.cost = cost;
     }
-    public boolean esCantonada(){
-        return this.corner!=null;
+
+    public boolean esCantonada() {
+        return this.corner != null;
     }
 
     @Override
     public boolean equals(Object obj) {
         final NodeEstrella other = (NodeEstrella) obj;
-        if(other.esCantonada() && this.esCantonada() && other.corner==this.corner){
+        if (other.esCantonada() && this.esCantonada() && other.corner.equals(this.corner)) {
             return true;
         }
         if (this == obj) {
@@ -48,11 +52,10 @@ public class NodeEstrella {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        
+
         if (!Objects.equals(this.corner, other.corner)) {
             return false;
         }
         return Objects.equals(this.point, other.point);
     }
 }
-
