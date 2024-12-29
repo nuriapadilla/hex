@@ -7,13 +7,13 @@ package edu.upc.epsevg.prop.hex;
 
 import edu.upc.epsevg.prop.hex.HexGameStatus;
 import edu.upc.epsevg.prop.hex.PlayerType;
-import edu.upc.epsevg.prop.hex.players.AEstrella;
-import edu.upc.epsevg.prop.hex.players.ComparadorNode;
-import edu.upc.epsevg.prop.hex.players.Dijkstra;
+import edu.upc.epsevg.prop.hex.players.Heuristica.AEstrella;
+import edu.upc.epsevg.prop.hex.players.Heuristica.ComparadorNode;
+import edu.upc.epsevg.prop.hex.players.Heuristica.Dijkstra;
 import edu.upc.epsevg.prop.hex.players.MyStatus;
 
-import edu.upc.epsevg.prop.hex.players.Node;
-import edu.upc.epsevg.prop.hex.players.NodeEstrella;
+import edu.upc.epsevg.prop.hex.players.Heuristica.Node;
+import edu.upc.epsevg.prop.hex.players.Heuristica.NodeEstrella;
 import edu.upc.epsevg.prop.hex.players.ProfeGameStatus2;
 import edu.upc.epsevg.prop.hex.players.ProfeGameStatus3;
 import edu.upc.epsevg.prop.hex.players.ProfeGameStatus3.Result;
@@ -86,7 +86,7 @@ public class UnitTesting {
         Node up = new Node("U", 0, null);
         Node down = new Node("D", Integer.MAX_VALUE, null);
         //System.out.println(hgs.toString());
-        Dijkstra di = new Dijkstra(11, new MyStatus(hgs));
+        Dijkstra di = new Dijkstra(11, new MyStatus(hgs), true);
         int player = -1;
         if (player == 1) {
             long inici = System.nanoTime();

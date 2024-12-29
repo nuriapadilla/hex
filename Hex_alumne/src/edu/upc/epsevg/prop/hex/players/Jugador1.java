@@ -4,6 +4,8 @@
  */
 package edu.upc.epsevg.prop.hex.players;
 
+import edu.upc.epsevg.prop.hex.players.Heuristica.Dijkstra;
+import edu.upc.epsevg.prop.hex.players.Heuristica.Node;
 import edu.upc.epsevg.prop.hex.HexGameStatus;
 import edu.upc.epsevg.prop.hex.IAuto;
 import edu.upc.epsevg.prop.hex.IPlayer;

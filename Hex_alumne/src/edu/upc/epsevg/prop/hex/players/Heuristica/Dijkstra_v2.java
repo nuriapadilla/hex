@@ -2,9 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package edu.upc.epsevg.prop.hex.players;
+package edu.upc.epsevg.prop.hex.players.Heuristica;
 
+import edu.upc.epsevg.prop.hex.players.Heuristica.ComparadorNode;
+import edu.upc.epsevg.prop.hex.players.Heuristica.Node;
 import edu.upc.epsevg.prop.hex.HexGameStatus;
+import edu.upc.epsevg.prop.hex.players.MyStatus;
 import java.awt.Point;
 import java.util.PriorityQueue;
 import java.util.Vector;
@@ -13,17 +16,17 @@ import java.util.Vector;
  *
  * @author nuria
  */
-public class Dijkstra {
+public class Dijkstra_v2 {
 
-    public Dijkstra(int mida, MyStatus hgs, boolean i) {
+    public Dijkstra_v2(int mida, MyStatus hgs) {
         this.mida = mida;
         this.hgs = hgs;
-        virt = i;
+        this.vivi = new Veins(hgs);
     }
 
     private final int mida;
     HexGameStatus hgs;
-    boolean virt;
+    Veins vivi;
 
     private String costat(Point p) {
         if (p.x == mida) {
@@ -35,26 +38,7 @@ public class Dijkstra {
         return "N";
     }
 
-    private Vector<Point> veins(Point p) {
-        Vector<Point> sol = new Vector<>();
-        if (p.x > 0) {
-            sol.add(new Point(p.x - 1, p.y));
-        }
-        if (p.y > 0) {
-            sol.add(new Point(p.x, p.y - 1));
-        }
-        sol.add(new Point(p.x + 1, p.y));
-        sol.add(new Point(p.x, p.y + 1));
-        if (p.x > 0) {
-            sol.add(new Point(p.x - 1, p.y + 1));
-        }
-        if (p.y > 0) {
-            sol.add(new Point(p.x + 1, p.y - 1));
-        }
-        // Camins virtuals
-
-        return sol;
-    }
+    
 
     private Vector<Point> caminsvirtuals(Point p, int player) {
         Vector<Point> sol = new Vector<>();
@@ -64,19 +48,19 @@ public class Dijkstra {
         // (x-1, y+2) ---- (x, y+1) // (x-1, y+1)
         // (x-2, y+1) ----- (x-1, y) // (x-1, y+1)
         // (x-1, y-1) -----(x, y-1) // (x-1, y)
-        if (p.x + 1 < mida && p.y - 2 >= 0 && hgs.getPos(p.x, p.y - 1) == 0 && hgs.getPos(p.x + 1, p.y - 1) == 0) {
+        if (p.x + 1 <= mida && p.y - 2 >= 0 && hgs.getPos(p.x, p.y - 1) == 0 && hgs.getPos(p.x + 1, p.y - 1) == 0) {
             sol.add(new Point(p.x + 1, p.y - 2));
         }
         if (p.x + 2 <= mida && p.y - 1 >= 0 && hgs.getPos(p.x + 1, p.y - 1) == 0 && hgs.getPos(p.x + 1, p.y) == 0) {
             sol.add(new Point(p.x + 2, p.y - 1));
         }
-        if (p.x + 1 < mida && p.y + 1 < mida && hgs.getPos(p.x + 1, p.y) == 0 && hgs.getPos(p.x, p.y + 1) == 0) {
+        if (p.x + 1 <= mida && p.y + 1 <= mida && hgs.getPos(p.x + 1, p.y) == 0 && hgs.getPos(p.x, p.y + 1) == 0) {
             sol.add(new Point(p.x + 1, p.y + 1));
         }
         if (p.x - 1 >= 0 && p.y + 2 <= mida && hgs.getPos(p.x, p.y + 1) == 0 && hgs.getPos(p.x - 1, p.y + 1) == 0) {
             sol.add(new Point(p.x - 1, p.y + 2));
         }
-        if (p.x - 2 >= 0 && p.y + 1 < mida && hgs.getPos(p.x - 1, p.y) == 0 && hgs.getPos(p.x - 1, p.y + 1) == 0) {
+        if (p.x - 2 >= 0 && p.y + 1 <= mida && hgs.getPos(p.x - 1, p.y) == 0 && hgs.getPos(p.x - 1, p.y + 1) == 0) {
             sol.add(new Point(p.x - 2, p.y + 1));
         }
         if (p.x - 1 >= 0 && p.y - 1 >= 0 && hgs.getPos(p.x, p.y - 1) == 0 && hgs.getPos(p.x - 1, p.y) == 0) {
@@ -100,12 +84,10 @@ public class Dijkstra {
                         // System.out.println("esta ocupada "+ p);
                         //System.out.println("afegeixo: 0 " + i);
                         pq.add(new Node(new Point(0, i), 0, nIni));
-                        // podria afegir virtuals ?
                     } else if (hgs.getPos(0, i) == 0) {
                         //System.out.println("esta buida " );
                         //System.out.println("afegeixo: 0 " + i);
                         pq.add(new Node(new Point(0, i), 1, nIni));
-                        // podria afegir virtuals ?
                     }
                 }
                 break;
@@ -134,12 +116,13 @@ public class Dijkstra {
     
         System.out.println("---------------------------------------");
         */
+        int cont = 0, d1=mida , d2=mida;
         Node actual = pq.poll();
-        while (actual != null && !(actual.esCantonada() && actual.corner.equals(nFi.corner))) {
-
+        while (actual != null && cont<2) {
+            
             if (!actual.esCantonada() && !visitats[actual.point.x][actual.point.y]) {
                 visitats[actual.point.x][actual.point.y] = true;
-                Vector<Point> v = veins(actual.point);
+                Vector<Point> v = vivi.veins(actual.point);
                 //Vector<Point> cv = caminsvirtuals(actual.point, p);
                 for (Point t : v) {
                     String c = costat(t);
@@ -160,35 +143,17 @@ public class Dijkstra {
                             }
                     }
                 }
-                
-                Vector<Point> cv = caminsvirtuals(actual.point, p);
-                for (Point t : cv) {
-                    String c = costat(t);
-                    switch (c) {
-                        case "R":
-                            pq.add(new Node("R", actual.distance, actual));
-                            break;
-                        case "D":
-                            pq.add(new Node("D", actual.distance, actual));
-                            break;
-                        default:
-                            if (!visitats[t.x][t.y]) {
-                                if (hgs.getPos(t) == p) {
-                                    if(virt || hgs.getPos(actual.point.x, actual.point.y)==p)pq.add(new Node(t, actual.distance + 0, actual));
-                                } else if (hgs.getPos(t) == 0) {
-                                    if(virt) pq.add(new Node(t, actual.distance + 1, actual));
-                                }
-                            }
-                    }
-                }
             }
             actual = pq.poll();
+            if(actual.esCantonada() && actual.corner.equals(nFi.corner)) cont++;
+            if(cont==1) d1= actual.distance;
+            if(cont==2) d2 = actual.distance;
         }
         if (actual == null) {
             //System.out.println("Imprimeixo el tauler");
             //System.out.println(hgs.toString());
             System.out.println("ES nulllll");
         }
-        return actual.distance;
+        return d1+d2;
     }
 }
