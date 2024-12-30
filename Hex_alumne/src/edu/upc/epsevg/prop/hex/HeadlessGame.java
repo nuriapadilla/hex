@@ -32,8 +32,12 @@ public class HeadlessGame {
     private long totalTimePlayer2 = 0;   // Temps acumulat del jugador 2
     private int movesPlayer1 = 0;        // Nombre de moviments del jugador 1
     private int movesPlayer2 = 0;        // Nombre de moviments del jugador 2
-
-    
+    private static int maxniv1 = 0;
+    private static int averageniv1 = 0;
+    private static int cont1 = 0;
+    private static int maxniv2 = 0;
+    private static int averageniv2 = 0;
+    private static int cont2 = 0;
     public static void main(String[] args) {
 
 
@@ -43,17 +47,34 @@ public class HeadlessGame {
         IPlayer player5 = new HEXageradaAI(true, 3, true);
 
         IPlayer player4 = new JugadorEstrella(true,4);
-        HeadlessGame game1 = new HeadlessGame(player2, player5, 11, 10/*s timeout*/, 5/*games*/);
-        HeadlessGame game2 = new HeadlessGame(player5, player2, 11, 10/*s timeout*/, 5/*games*/);
+        HeadlessGame game1 = new HeadlessGame(player5, player1, 9, 10/*s timeout*/, 1/*games*/);
+        HeadlessGame game2 = new HeadlessGame(player5, player1, 9, 10/*s timeout*/, 1/*games*/);
+        
 
         GameResult gr1 = game1.start();
         System.out.println(gr1);
         game1.printAverageTimes(); // Mostra els temps mitjans
+        System.out.println("Nivell maxim aconseguit jugador 1: "+ maxniv1);
+        System.out.println("Mitjana nivell jugador 1: " + (double)averageniv1/cont1);
+        System.out.println("Nivell maxim aconseguit jugador 2: " + maxniv2);
+        System.out.println("Mitjana nivell jugador 2: " + averageniv2 / cont2);
         System.out.println("-----------------------------------------------");
         
         GameResult gr2 = game2.start();
         System.out.println(gr2);
+        
+        maxniv1 = 0;
+        averageniv1 = 0;
+        cont1 = 0;
+        maxniv2 = 0;
+        averageniv2 = 0;
+        cont2 = 0;
+        
         game2.printAverageTimes(); // Mostra els temps mitjans
+        System.out.println("Nivell maxim aconseguit jugador 1: " + maxniv1);
+        System.out.println("Mitjana nivell jugador 1: " + averageniv1 / cont1);
+        System.out.println("Nivell maxim aconseguit jugador 2: " + maxniv2);
+        System.out.println("Mitjana nivell jugador 2: " + averageniv2 / cont2);
         System.out.println("-----------------------------------------------");
     }
 
@@ -100,7 +121,19 @@ public class HeadlessGame {
                     ex.printStackTrace();
                 }
                 if (m != null) {
-                    
+                    if (cp == PlayerType.PLAYER1) {
+                        if (maxniv1 < m.getMaxDepthReached()) {
+                            maxniv1 = m.getMaxDepthReached();
+                        }
+                        averageniv1 += m.getMaxDepthReached();
+                        cont1++;
+                    } else {
+                        if (maxniv2 < m.getMaxDepthReached()) {
+                            maxniv2 = m.getMaxDepthReached();
+                        }
+                        averageniv2 += m.getMaxDepthReached();
+                        cont2++;
+                    }
                     status.placeStone(m.getPoint());
                 } else {
                     status.forceLoser();
