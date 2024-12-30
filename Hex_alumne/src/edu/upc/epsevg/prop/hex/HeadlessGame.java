@@ -6,7 +6,6 @@ import edu.upc.epsevg.prop.hex.players.HEXageradaAI;
 import edu.upc.epsevg.prop.hex.players.H_E_X_Player;
 import edu.upc.epsevg.prop.hex.players.HumanPlayer;
 import edu.upc.epsevg.prop.hex.players.Jugador2;
-import edu.upc.epsevg.prop.hex.players.JugadorEstrella;
 import edu.upc.epsevg.prop.hex.players.RandomPlayer;
 import java.lang.ref.WeakReference;
 
@@ -46,9 +45,8 @@ public class HeadlessGame {
         IPlayer player3 = new HEXageradaAI(false, 3, true);
         IPlayer player5 = new HEXageradaAI(true, 3, true);
 
-        IPlayer player4 = new JugadorEstrella(true,4);
-        HeadlessGame game1 = new HeadlessGame(player5, player1, 9, 10/*s timeout*/, 1/*games*/);
-        HeadlessGame game2 = new HeadlessGame(player5, player1, 9, 10/*s timeout*/, 1/*games*/);
+        HeadlessGame game1 = new HeadlessGame(player5, player1, 9, 25/*s timeout*/, 1/*games*/);
+        // HeadlessGame game2 = new HeadlessGame(player5, player1, 9, 10/*s timeout*/, 1/*games*/);
         
 
         GameResult gr1 = game1.start();
@@ -60,8 +58,8 @@ public class HeadlessGame {
         System.out.println("Mitjana nivell jugador 2: " + averageniv2 / cont2);
         System.out.println("-----------------------------------------------");
         
-        GameResult gr2 = game2.start();
-        System.out.println(gr2);
+        //GameResult gr2 = game2.start();
+       // System.out.println(gr2);
         
         maxniv1 = 0;
         averageniv1 = 0;
@@ -70,12 +68,12 @@ public class HeadlessGame {
         averageniv2 = 0;
         cont2 = 0;
         
-        game2.printAverageTimes(); // Mostra els temps mitjans
+       /* game2.printAverageTimes(); // Mostra els temps mitjans
         System.out.println("Nivell maxim aconseguit jugador 1: " + maxniv1);
         System.out.println("Mitjana nivell jugador 1: " + averageniv1 / cont1);
         System.out.println("Nivell maxim aconseguit jugador 2: " + maxniv2);
         System.out.println("Mitjana nivell jugador 2: " + averageniv2 / cont2);
-        System.out.println("-----------------------------------------------");
+        System.out.println("-----------------------------------------------");*/
     }
 
     //=====================================================================================0
