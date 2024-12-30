@@ -58,7 +58,7 @@ public class Jugador2 implements IPlayer, IAuto {
         nodesExplored = nodesExplored + 1;
         int cami1;
         int cami2;
-        Node left = new Node("L", 0, null);
+        /*Node left = new Node("L", 0, null);
         Node right = new Node("R", Integer.MAX_VALUE, null);
         Node up = new Node("U", 0, null);
         Node down = new Node("D", Integer.MAX_VALUE, null);
@@ -70,8 +70,8 @@ public class Jugador2 implements IPlayer, IAuto {
         } else {
             cami1 = di.camiMesCurt(left, right, 1);
             cami2 = di.camiMesCurt(up, down, -1);
-        }
-        return cami1 - cami2;
+        }*/
+        return 0;
     }
 
     /**

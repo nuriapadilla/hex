@@ -83,11 +83,11 @@ public class Dijkstra_v2 {
                     if (hgs.getPos(0, i) == p) {
                         // System.out.println("esta ocupada "+ p);
                         //System.out.println("afegeixo: 0 " + i);
-                        pq.add(new Node(new Point(0, i), 0, nIni));
+                        //pq.add(new Node(new Point(0, i), 0, nIni));
                     } else if (hgs.getPos(0, i) == 0) {
                         //System.out.println("esta buida " );
                         //System.out.println("afegeixo: 0 " + i);
-                        pq.add(new Node(new Point(0, i), 1, nIni));
+                        //pq.add(new Node(new Point(0, i), 1, nIni));
                     }
                 }
                 break;
@@ -95,9 +95,9 @@ public class Dijkstra_v2 {
                 // System.out.println("Up first");
                 for (int i = 0; i < mida; i++) {
                     if (hgs.getPos(i, 0) == p) {
-                        pq.add(new Node(new Point(i, 0), 0, nIni));
+                        //pq.add(new Node(new Point(i, 0), 0, nIni));
                     } else if (hgs.getPos(i, 0) == 0) {
-                        pq.add(new Node(new Point(i, 0), 1, nIni));
+                        //pq.add(new Node(new Point(i, 0), 1, nIni));
                     }
                 }
                 break;
@@ -128,17 +128,17 @@ public class Dijkstra_v2 {
                     String c = costat(t);
                     switch (c) {
                         case "R":
-                            pq.add(new Node("R", actual.distance, actual));
+                            //pq.add(new Node("R", actual.distance, actual));
                             break;
                         case "D":
-                            pq.add(new Node("D", actual.distance, actual));
+                            //pq.add(new Node("D", actual.distance, actual));
                             break;
                         default:
                             if (!visitats[t.x][t.y]) {
                                 if (hgs.getPos(t) == p) {
-                                    pq.add(new Node(t, actual.distance + 0, actual));
+                                   // pq.add(new Node(t, actual.distance + 0, actual));
                                 } else if (hgs.getPos(t) == 0) {
-                                    pq.add(new Node(t, actual.distance + 1, actual));
+                                   // pq.add(new Node(t, actual.distance + 1, actual));
                                 }
                             }
                     }

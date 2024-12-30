@@ -141,6 +141,7 @@ public class Dijkstra {
             actual = pq.poll();
         }
         double pes = (double) actual.virutalcount / (mida * mida);
+        pes = pes + (double) actual.distance;
         return pes;
     }
 }

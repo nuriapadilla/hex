@@ -32,7 +32,7 @@ public class Jugador1 implements IPlayer, IAuto {
         id = i;
         profMax = p;
         map = new HashMap<>();
-        virt = j;
+        //virt = j;
     }
 
     public double heuristica(MyStatus hgs) {
@@ -40,10 +40,10 @@ public class Jugador1 implements IPlayer, IAuto {
 
         double cami1;
         double cami2;
-        Node left = new Node("L", 0, null);
-        Node right = new Node("R", Integer.MAX_VALUE, null);
-        Node up = new Node("U", 0, null);
-        Node down = new Node("D", Integer.MAX_VALUE, null);
+        Node left = new Node("L", 0, 0);
+        Node right = new Node("R", Integer.MAX_VALUE, 0);
+        Node up = new Node("U", 0, 0);
+        Node down = new Node("D", Integer.MAX_VALUE, 0);
         //System.out.println(hgs.toString());
         Dijkstra di = new Dijkstra(mida, hgs);
         if (player == 1) {
