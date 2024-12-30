@@ -38,7 +38,7 @@ public class Dijkstra {
         return "N";
     }
 
-    public int camiMesCurt(Node nIni, Node nFi, int p) {
+    public double camiMesCurt(Node nIni, Node nFi, int p) {
         // Hem decidit tenir els nodes en una PriorityQueue 
         PriorityQueue<Node> pq = new PriorityQueue<Node>(new ComparadorNode());
 
@@ -48,19 +48,19 @@ public class Dijkstra {
             case "L":
                 for (int i = 0; i < mida; i++) {
                     if (hgs.getPos(0, i) == p) {
-                        pq.add(new Node(new Point(0, i), 0, nIni));
+                        pq.add(new Node(new Point(0, i), 0, 0));
                     } else if (hgs.getPos(0, i) == 0) {
-                        pq.add(new Node(new Point(0, i), 1, nIni));
+                        pq.add(new Node(new Point(0, i), 1, 0));
                     }
                     // Virtuals
                     if (i - 1 >= 0) {
                         if ((hgs.getPos(0, i - 1) == 0) && (hgs.getPos(0, i) == 0)) {
                             if ((hgs.getPos(1, i - 1) == 0)) {
                                 Point pp = new Point(1, i - 1);
-                                pq.add(new Node(pp, 1, nIni));
+                                pq.add(new Node(pp, 1, 1));
                             } else if (hgs.getPos(1, i - 1) == p) {
                                 Point pp = new Point(1, i - 1);
-                                pq.add(new Node(pp, 0, nIni));
+                                pq.add(new Node(pp, 0, 1));
                             }
                         }
                     }
@@ -69,18 +69,19 @@ public class Dijkstra {
             case "U":
                 for (int i = 0; i < mida; i++) {
                     if (hgs.getPos(i, 0) == p) {
-                        pq.add(new Node(new Point(i, 0), 0, nIni));
+                        pq.add(new Node(new Point(i, 0), 0, 0));
                     } else if (hgs.getPos(i, 0) == 0) {
-                        pq.add(new Node(new Point(i, 0), 1, nIni));
+                        pq.add(new Node(new Point(i, 0), 1, 0));
                     }
+                    // Virtuals
                     if (i - 1 >= 0) {
                         if ((hgs.getPos(i - 1, 0) == 0) && (hgs.getPos(i, 0) == 0)) {
                             if ((hgs.getPos(i - 1, 1) == 0)) {
                                 Point pp = new Point(i - 1, 1);
-                                pq.add(new Node(pp, 1, nIni));
+                                pq.add(new Node(pp, 1, 1));
                             } else if (hgs.getPos(i - 1, 1) == p) {
                                 Point pp = new Point(i - 1, 1);
-                                pq.add(new Node(pp, 0, nIni));
+                                pq.add(new Node(pp, 0, 1));
                             }
                         }
                     }
@@ -96,21 +97,42 @@ public class Dijkstra {
             if (!actual.esCantonada() && !visitats[actual.point.x][actual.point.y]) {
                 visitats[actual.point.x][actual.point.y] = true;
                 Vector<Point> v = vivi.veins(actual.point);
+                
                 for (Point t : v) {
                     String c = costat(t);
                     switch (c) {
                         case "R":
-                            pq.add(new Node("R", actual.distance, actual));
+                            pq.add(new Node("R", actual.distance, actual.virutalcount));
                             break;
                         case "D":
-                            pq.add(new Node("D", actual.distance, actual));
+                            pq.add(new Node("D", actual.distance, actual.virutalcount));
                             break;
                         default:
                             if (!visitats[t.x][t.y]) {
                                 if (hgs.getPos(t) == p) {
-                                    pq.add(new Node(t, actual.distance + 0, actual));
+                                    pq.add(new Node(t, actual.distance + 0, actual.virutalcount));
                                 } else if (hgs.getPos(t) == 0) {
-                                    pq.add(new Node(t, actual.distance + 1, actual));
+                                    pq.add(new Node(t, actual.distance + 1, actual.virutalcount));
+                                }
+                            }
+                    }
+                }
+                v = vivi.caminsVirtuals(actual.point);
+                for (Point t : v) {
+                    String c = costat(t);
+                    switch (c) {
+                        case "R":
+                            pq.add(new Node("R", actual.distance, actual.virutalcount+1));
+                            break;
+                        case "D":
+                            pq.add(new Node("D", actual.distance, actual.virutalcount+1));
+                            break;
+                        default:
+                            if (!visitats[t.x][t.y]) {
+                                if (hgs.getPos(t) == p) {
+                                    pq.add(new Node(t, actual.distance + 0, actual.virutalcount+1));
+                                } else if (hgs.getPos(t) == 0) {
+                                    pq.add(new Node(t, actual.distance + 1, actual.virutalcount+1));
                                 }
                             }
                     }
@@ -118,6 +140,8 @@ public class Dijkstra {
             }
             actual = pq.poll();
         }
-        return actual.distance;
+        double pes = (double) actual.virutalcount / (mida * mida);
+        pes = pes + (double) actual.distance;
+        return pes;
     }
 }

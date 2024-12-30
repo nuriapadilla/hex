@@ -37,7 +37,7 @@ public class Game {
                 IPlayer player4 = new Jugador2(true, 2, 50);
                 IPlayer estrella = new JugadorEstrella(true,3);
                 
-                new Board(estrella, player1, 11 /*mida*/,  10/*s*/, false);
+                new Board(player3, player1, 11 /*mida*/,  10/*s*/, false);
              }
         });
     }

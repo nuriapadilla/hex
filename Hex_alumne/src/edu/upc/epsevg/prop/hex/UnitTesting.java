@@ -72,21 +72,21 @@ public class UnitTesting {
         System.out.println(gs.toString());
         System.out.println("heuri ");
 
-        int heuri = heuristicaDijkstra(gs);
+        double heuri = heuristicaDijkstra(gs);
         System.out.println("Breuri star");
         int breuri = heuristicaStar(gs);
 
     }
 
-    public static int heuristicaDijkstra(HexGameStatus hgs) {
-        int cami1;
-        int cami2;
-        Node left = new Node("L", 0, null);
-        Node right = new Node("R", Integer.MAX_VALUE, null);
-        Node up = new Node("U", 0, null);
-        Node down = new Node("D", Integer.MAX_VALUE, null);
+    public static double heuristicaDijkstra(HexGameStatus hgs) {
+        double cami1;
+        double cami2;
+        Node left = new Node("L", 0, 0);
+        Node right = new Node("R", Integer.MAX_VALUE, 0);
+        Node up = new Node("U", 0, 0);
+        Node down = new Node("D", Integer.MAX_VALUE, 0);
         //System.out.println(hgs.toString());
-        Dijkstra di = new Dijkstra(11, new MyStatus(hgs), true);
+        Dijkstra di = new Dijkstra(11, new MyStatus(hgs));
         int player = -1;
         if (player == 1) {
             long inici = System.nanoTime();
