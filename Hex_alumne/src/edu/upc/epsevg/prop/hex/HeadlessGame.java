@@ -2,9 +2,9 @@ package edu.upc.epsevg.prop.hex;
 
 
 
+import edu.upc.epsevg.prop.hex.players.HEXageradaAI;
 import edu.upc.epsevg.prop.hex.players.H_E_X_Player;
 import edu.upc.epsevg.prop.hex.players.HumanPlayer;
-import edu.upc.epsevg.prop.hex.players.Jugador1;
 import edu.upc.epsevg.prop.hex.players.Jugador2;
 import edu.upc.epsevg.prop.hex.players.JugadorEstrella;
 import edu.upc.epsevg.prop.hex.players.RandomPlayer;
@@ -39,8 +39,8 @@ public class HeadlessGame {
 
         IPlayer player1 = new RandomPlayer("Paco");
         IPlayer player2 = new H_E_X_Player(2/*GB*/);                    
-        IPlayer player3 = new Jugador1(false, 3, true);
-        IPlayer player5 = new Jugador1(true, 3, true);
+        IPlayer player3 = new HEXageradaAI(false, 3, true);
+        IPlayer player5 = new HEXageradaAI(true, 3, true);
 
         IPlayer player4 = new JugadorEstrella(true,4);
         HeadlessGame game1 = new HeadlessGame(player2, player5, 11, 10/*s timeout*/, 5/*games*/);
@@ -100,6 +100,7 @@ public class HeadlessGame {
                     ex.printStackTrace();
                 }
                 if (m != null) {
+                    
                     status.placeStone(m.getPoint());
                 } else {
                     status.forceLoser();
