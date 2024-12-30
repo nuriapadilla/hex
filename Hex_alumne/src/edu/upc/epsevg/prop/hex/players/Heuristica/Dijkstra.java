@@ -102,17 +102,17 @@ public class Dijkstra {
                     String c = costat(t);
                     switch (c) {
                         case "R":
-                            pq.add(new Node("R", actual.distance, actual.virutalcount));
+                            pq.add(new Node("R", actual.distance, actual.virtualcount));
                             break;
                         case "D":
-                            pq.add(new Node("D", actual.distance, actual.virutalcount));
+                            pq.add(new Node("D", actual.distance, actual.virtualcount));
                             break;
                         default:
                             if (!visitats[t.x][t.y]) {
                                 if (hgs.getPos(t) == p) {
-                                    pq.add(new Node(t, actual.distance + 0, actual.virutalcount));
+                                    pq.add(new Node(t, actual.distance + 0, actual.virtualcount));
                                 } else if (hgs.getPos(t) == 0) {
-                                    pq.add(new Node(t, actual.distance + 1, actual.virutalcount));
+                                    pq.add(new Node(t, actual.distance + 1, actual.virtualcount));
                                 }
                             }
                     }
@@ -122,17 +122,17 @@ public class Dijkstra {
                     String c = costat(t);
                     switch (c) {
                         case "R":
-                            pq.add(new Node("R", actual.distance, actual.virutalcount+1));
+                            pq.add(new Node("R", actual.distance, actual.virtualcount+1));
                             break;
                         case "D":
-                            pq.add(new Node("D", actual.distance, actual.virutalcount+1));
+                            pq.add(new Node("D", actual.distance, actual.virtualcount+1));
                             break;
                         default:
                             if (!visitats[t.x][t.y]) {
                                 if (hgs.getPos(t) == p) {
-                                    pq.add(new Node(t, actual.distance + 0, actual.virutalcount+1));
+                                    pq.add(new Node(t, actual.distance + 0, actual.virtualcount+1));
                                 } else if (hgs.getPos(t) == 0) {
-                                    pq.add(new Node(t, actual.distance + 1, actual.virutalcount+1));
+                                    pq.add(new Node(t, actual.distance + 1, actual.virtualcount+1));
                                 }
                             }
                     }
@@ -140,7 +140,7 @@ public class Dijkstra {
             }
             actual = pq.poll();
         }
-        double pes = (double) actual.virutalcount / (mida * mida);
+        double pes = (double) actual.virtualcount / (mida * mida);
         pes = pes + (double) actual.distance;
         return pes;
     }

@@ -11,6 +11,8 @@ import edu.upc.epsevg.prop.hex.IAuto;
 import edu.upc.epsevg.prop.hex.IPlayer;
 import edu.upc.epsevg.prop.hex.PlayerMove;
 import edu.upc.epsevg.prop.hex.SearchType;
+import edu.upc.epsevg.prop.hex.players.Heuristica.AEstrella;
+import edu.upc.epsevg.prop.hex.players.Heuristica.NodeEstrella;
 import java.awt.Point;
 import java.util.HashMap;
 
@@ -18,7 +20,7 @@ import java.util.HashMap;
  *
  * @author nuria
  */
-public class Jugador1 implements IPlayer, IAuto {
+public class HEXageradaAI implements IPlayer, IAuto {
 
     boolean id;
     int profMax;
@@ -28,16 +30,35 @@ public class Jugador1 implements IPlayer, IAuto {
     int player;
     int mida;
     HashMap<MyStatus, Point> map;
-    public Jugador1(boolean i, int p, boolean j) {
+    boolean star;
+    public HEXageradaAI(boolean i, int p, boolean star) {
         id = i;
         profMax = p;
         map = new HashMap<>();
+        this.star = star;
     }
 
-    public double heuristica(MyStatus hgs) {
-        nodesExplored = nodesExplored + 1;
-
-        double cami1;
+    private double heuriStar(MyStatus hgs){
+          double cami1;
+        double cami2;
+        NodeEstrella left = new NodeEstrella("L", 0, 0,0);
+        NodeEstrella right = new NodeEstrella("R", Integer.MAX_VALUE, 0,0);
+        NodeEstrella up = new NodeEstrella("U", 0, 0,0);
+        NodeEstrella down = new NodeEstrella("D", Integer.MAX_VALUE, 0,0);
+        //System.out.println(hgs.toString());
+        AEstrella di = new AEstrella(mida, hgs);
+        if (player == 1) {
+            cami2 = di.camiMesCurt(left, right, 1);
+            cami1 = di.camiMesCurt(up, down, -1);
+        } else {
+            cami1 = di.camiMesCurt(left, right, 1);
+            cami2 = di.camiMesCurt(up, down, -1);
+        }
+        return cami1 - cami2;
+    }
+    
+    private double heuriDijkstra(MyStatus hgs){
+         double cami1;
         double cami2;
         Node left = new Node("L", 0, 0);
         Node right = new Node("R", Integer.MAX_VALUE, 0);
@@ -53,6 +74,16 @@ public class Jugador1 implements IPlayer, IAuto {
             cami2 = di.camiMesCurt(up, down, -1);
         }
         return cami1 - cami2;
+    }
+    
+    public double heuristica(MyStatus hgs) {
+        nodesExplored = nodesExplored + 1;
+
+       if(star){
+           return heuriStar(hgs);
+       } else {
+           return heuriDijkstra(hgs);
+       }
         //return 0;
     }
 
@@ -344,6 +375,11 @@ public class Jugador1 implements IPlayer, IAuto {
 
     @Override
     public String getName() {
-        return ("Jugador 1");
+        if(star){
+            return("Star HEXagerada");
+        } else {
+            return("HEXagerada");
+        }
+        
     }
 }

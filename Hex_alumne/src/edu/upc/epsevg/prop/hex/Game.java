@@ -5,8 +5,8 @@ import edu.upc.epsevg.prop.hex.players.RandomPlayer;
 import edu.upc.epsevg.prop.hex.IPlayer;
 import edu.upc.epsevg.prop.hex.IPlayer;
 import edu.upc.epsevg.prop.hex.IPlayer;
+import edu.upc.epsevg.prop.hex.players.HEXageradaAI;
 import edu.upc.epsevg.prop.hex.players.H_E_X_Player;
-import edu.upc.epsevg.prop.hex.players.Jugador1;
 import edu.upc.epsevg.prop.hex.players.Jugador2;
 import edu.upc.epsevg.prop.hex.players.JugadorEstrella;
 
@@ -33,11 +33,12 @@ public class Game {
                 
                 IPlayer player2 = new HumanPlayer("Human");
                                 
-                IPlayer player3 = new Jugador1(true, 2, true);
+                IPlayer normal = new HEXageradaAI(true, 2, false);
+                IPlayer star = new HEXageradaAI(true, 2, true);
                 IPlayer player4 = new Jugador2(true, 2, 50);
                 IPlayer estrella = new JugadorEstrella(true,3);
                 
-                new Board(player3, player2, 11 /*mida*/,  10/*s*/, false);
+                new Board(player1,normal, 11 /*mida*/,  10/*s*/, false);
              }
         });
     }

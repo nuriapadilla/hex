@@ -37,22 +37,9 @@ public class JugadorEstrella implements IPlayer, IAuto {
     public int heuristica(MyStatus hgs) {
         nodesExplored = nodesExplored + 1;
 
-        int cami1;
-        int cami2;
-        NodeEstrella left = new NodeEstrella("L", 0,0, null);
-        NodeEstrella right = new NodeEstrella("R", Integer.MAX_VALUE,0, null);
-        NodeEstrella up = new NodeEstrella("U", 0,0, null);
-        NodeEstrella down = new NodeEstrella("D", Integer.MAX_VALUE,0, null);
-        //System.out.println(hgs.toString());
-        AEstrella di = new AEstrella(mida, hgs);
-        if (player == 1) {
-            cami2 = di.camiMesCurt(left, right, 1);
-            cami1 = di.camiMesCurt(up, down, -1);
-        } else {
-            cami1 = di.camiMesCurt(left, right, 1);
-            cami2 = di.camiMesCurt(up, down, -1);
-        }
-        return cami1 - cami2;
+       
+        
+        return 0;
         //return 0;
     }
 

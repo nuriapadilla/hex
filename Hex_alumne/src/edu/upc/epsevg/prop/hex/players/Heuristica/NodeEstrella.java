@@ -6,6 +6,7 @@ package edu.upc.epsevg.prop.hex.players.Heuristica;
 
 import java.awt.Point;
 import java.util.Objects;
+
 /**
  * Representa un node en l'algorisme de cerca A*, utilitzat per calcular
  * el camí més curt en el tauler del joc Hex.
@@ -42,9 +43,13 @@ public class NodeEstrella {
     public int distance;
 
     /**
-     * Referència al node anterior en el camí.
+     * Nombre de camins virtuals associats a aquest node.
+     * <p>
+     * Els camins virtuals són aquells que no tenen ocupacions físiques al tauler
+     * però que es consideren accessibles segons les regles de l'algorisme.
+     * </p>
      */
-    public NodeEstrella anterior;
+    public int virtualcount;
 
     /**
      * Cost heurístic estimat des d'aquest node fins al node final.
@@ -56,13 +61,13 @@ public class NodeEstrella {
      * 
      * @param point Posició del node dins del tauler.
      * @param distance Distància acumulada des de l'inici.
+     * @param virtualcount Nombre de camins virtuals associats a aquest node.
      * @param cost Cost heurístic estimat fins al node final.
-     * @param anterior Referència al node anterior en el camí.
      */
-    public NodeEstrella(Point point, int distance, float cost, NodeEstrella anterior) {
+    public NodeEstrella(Point point, int distance, float cost, int virtualcount) {
         this.point = point;
         this.distance = distance;
-        this.anterior = anterior;
+        this.virtualcount = virtualcount;
         this.cost = cost;
     }
 
@@ -71,13 +76,13 @@ public class NodeEstrella {
      * 
      * @param corner Identificador del costat ("L", "R", "T", o "D").
      * @param distance Distància acumulada des de l'inici.
+     * @param virtualcount Nombre de camins virtuals associats a aquest node.
      * @param cost Cost heurístic estimat fins al node final.
-     * @param anterior Referència al node anterior en el camí.
      */
-    public NodeEstrella(String corner, int distance, float cost, NodeEstrella anterior) {
+    public NodeEstrella(String corner, int distance, float cost, int virtualcount) {
         this.corner = corner;
         this.distance = distance;
-        this.anterior = anterior;
+        this.virtualcount = virtualcount;
         this.cost = cost;
     }
 

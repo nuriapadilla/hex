@@ -90,7 +90,7 @@ public class UnitTesting {
 
         double heuri = heuristicaDijkstra(gs);
         System.out.println("Breuri star");
-        int breuri = heuristicaStar(gs);
+        double breuri = heuristicaStar(gs);
 
     }
 
@@ -138,13 +138,13 @@ public class UnitTesting {
         return cami1 - cami2;
     }
 
-    public static int heuristicaStar(HexGameStatus hgs) {
-        int cami1;
-        int cami2;
-        NodeEstrella left = new NodeEstrella("L", 0, 0, null);
-        NodeEstrella right = new NodeEstrella("R", Integer.MAX_VALUE, 0, null);
-        NodeEstrella up = new NodeEstrella("U", 0, 0, null);
-        NodeEstrella down = new NodeEstrella("D", Integer.MAX_VALUE, 0, null);
+    public static double heuristicaStar(HexGameStatus hgs) {
+        double cami1;
+        double cami2;
+        NodeEstrella left = new NodeEstrella("L", 0, 0, 0);
+        NodeEstrella right = new NodeEstrella("R", Integer.MAX_VALUE, 0, 0);
+        NodeEstrella up = new NodeEstrella("U", 0, 0, 0);
+        NodeEstrella down = new NodeEstrella("D", Integer.MAX_VALUE, 0, 0);
         //System.out.println(hgs.toString());
         AEstrella di = new AEstrella(11, new MyStatus(hgs));
         int player = -1;
