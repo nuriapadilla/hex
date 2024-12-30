@@ -45,7 +45,6 @@ public class MyStatus extends HexGameStatus {
     
     public MyStatus(MyStatus hgs) {
         super(hgs);
-        System.out.println("holaaa");
         int mida = hgs.getSize();
         hash = hgs.hash;
         initZorbit(mida);
@@ -54,7 +53,6 @@ public class MyStatus extends HexGameStatus {
     
     public MyStatus(HexGameStatus hgs){
         super(hgs);
-        System.out.println("adeu");
         int mida = hgs.getSize();
         hash = 0;
         initZorbit(mida);
