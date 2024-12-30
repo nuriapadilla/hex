@@ -58,6 +58,12 @@ public class Veins {
         if (p.y > 0) {
             sol.add(new Point(p.x + 1, p.y - 1));
         }
+        
+        return sol;
+        
+    }
+     public Vector<Point> caminsVirtuals(Point p) {
+        Vector<Point> sol = new Vector<>();
         // Camins virtuals
         if (p.x + 1 < mida && p.y - 2 >= 0 && hgs.getPos(p.x, p.y - 1) == 0 && hgs.getPos(p.x + 1, p.y - 1) == 0) {
             sol.add(new Point(p.x + 1, p.y - 2));
@@ -86,6 +92,7 @@ public class Veins {
             sol.add(new Point(p.x, p.y + 1));
         }
         return sol;
-    }
+     }
+        
 
 }

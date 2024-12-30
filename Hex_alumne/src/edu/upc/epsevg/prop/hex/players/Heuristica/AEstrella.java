@@ -136,9 +136,9 @@ public class AEstrella {
                         default:
                             if (!visitats[t.x][t.y]) {
                                 if (hgs.getPos(t) == p) {
-                                    pq.add(new NodeEstrella(t, actual.distance + 0, 0, actual));
+                                    pq.add(new NodeEstrella(t, actual.distance + 0, preu(t,nIni,nFi), actual));
                                 } else if (hgs.getPos(t) == 0) {
-                                    pq.add(new NodeEstrella(t, actual.distance + 1, 0, actual));
+                                    pq.add(new NodeEstrella(t, actual.distance + 1, preu(t,nIni,nFi), actual));
                                 }
                             }
                     }

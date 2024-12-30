@@ -86,7 +86,7 @@ public class UnitTesting {
         Node up = new Node("U", 0, null);
         Node down = new Node("D", Integer.MAX_VALUE, null);
         //System.out.println(hgs.toString());
-        Dijkstra di = new Dijkstra(11, new MyStatus(hgs), true);
+        Dijkstra di = new Dijkstra(11, new MyStatus(hgs));
         int player = -1;
         if (player == 1) {
             long inici = System.nanoTime();

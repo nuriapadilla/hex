@@ -63,7 +63,7 @@ public class Jugador2 implements IPlayer, IAuto {
         Node up = new Node("U", 0, null);
         Node down = new Node("D", Integer.MAX_VALUE, null);
         //System.out.println(hgs.toString());
-        Dijkstra di = new Dijkstra(mida, hgs, true);
+        Dijkstra di = new Dijkstra(mida, hgs);
         if (player == 1) {
             cami2 = di.camiMesCurt(left, right, 1);
             cami1 = di.camiMesCurt(up, down, -1);

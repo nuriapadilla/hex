@@ -16,18 +16,18 @@ public class Node {
     public String corner;
     public Point point;
     public int distance;
-    public Node anterior;
+    public int virutalcount;
 
-    public Node(Point point, int distance, Node anterior) {
+    public Node(Point point, int distance, int virutalcount) {
         this.point = point;
         this.distance = distance;
-        this.anterior = anterior;
+        this.virutalcount = virutalcount;
     }
     
-    public Node(String corner, int distance, Node anterior){
+    public Node(String corner, int distance, int virutalcount){
         this.corner = corner;
         this.distance = distance;
-        this.anterior = anterior;
+        this.virutalcount = virutalcount;
     }
     public boolean esCantonada(){
         return this.corner!=null;
