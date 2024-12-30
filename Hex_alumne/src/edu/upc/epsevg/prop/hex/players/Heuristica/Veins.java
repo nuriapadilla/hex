@@ -9,18 +9,39 @@ import java.awt.Point;
 import java.util.Vector;
 
 /**
+ * Classe que calcula els veïns d'una posició específica en un tauler Hex,
+ * incloent veïns directes i camins virtuals per a possibles jugades
+ * estratègiques.
  *
- * @author bruna
+ * @author bruna i nuria
  */
 public class Veins {
 
-    private MyStatus hgs;
-    private int mida = 11;
-
+    private MyStatus hgs;   // Estat actual del joc
+    private int mida;       // Mida del tauler
+    
+    /**
+     * Constructor de la classe Veins.
+     *
+     * @param hgs l'estat actual del joc, representat per un objecte MyStatus.
+     */
     public Veins(MyStatus hgs) {
         this.hgs = hgs;
+        mida = hgs.getSize();
     }
 
+    /**
+     * Retorna un vector de punts que representen els veïns d'una posició
+     * específica al tauler, incloent els veïns directes i possibles camins
+     * virtuals.
+     *
+     * Els camins virtuals són posicions addicionals que permeten estratègies
+     * avançades en el joc, com per exemple connexions virtuals a través de
+     * posicions buides.
+     *
+     * @param p el punt actual per al qual es volen trobar els veïns.
+     * @return un vector de punts que conté tots els veïns directes i virtuals.
+     */
     public Vector<Point> veins(Point p) {
         Vector<Point> sol = new Vector<>();
         if (p.x > 0) {
