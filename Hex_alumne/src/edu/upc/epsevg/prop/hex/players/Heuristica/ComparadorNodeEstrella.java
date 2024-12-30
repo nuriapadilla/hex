@@ -22,6 +22,8 @@ public class ComparadorNodeEstrella implements Comparator<NodeEstrella> {
         float t1float = (float) t1.distance;
         float compa = tfloat + t.cost;
         float compa1 = t1float + t1.cost;
+       
+        
         return Float.compare(compa, compa1);
     }
 

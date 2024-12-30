@@ -84,12 +84,12 @@ public class UnitTesting {
 
         System.out.println("executem aixo visca");
 
-        HexGameStatus gs = new HexGameStatus(board4, PlayerType.PLAYER2);
+        HexGameStatus gs = new HexGameStatus(board3, PlayerType.PLAYER2);
         System.out.println(gs.toString());
-        System.out.println("heuri ");
+        System.out.println("DIJKSTRA");
 
         double heuri = heuristicaDijkstra(gs);
-        System.out.println("Breuri star");
+        System.out.println("A*");
         double breuri = heuristicaStar(gs);
 
     }
@@ -130,7 +130,7 @@ public class UnitTesting {
             // Converteix a mil·lisegons (opcional)
             double duracioMilisegons = duracio / 1_000_000.0;
 
-            System.out.println("La funció dijsktra ha tardat: " + duracioMilisegons + " ms");
+            System.out.println("La funció dijkstra ha tardat: " + duracioMilisegons + " ms");
             cami2 = di.camiMesCurt(up, down, -1);
         }
         System.out.println("Cami 1:   " + cami1);
@@ -160,7 +160,7 @@ public class UnitTesting {
             // Converteix a mil·lisegons (opcional)
             double duracioMilisegons = duracio / 1_000_000.0;
 
-            System.out.println("La funció breuri star ha tardat: " + duracioMilisegons + " ms");
+            System.out.println("La funció a star ha tardat: " + duracioMilisegons + " ms");
             cami1 = di.camiMesCurt(up, down, -1);
         } else {
             long inici = System.nanoTime();
@@ -174,7 +174,7 @@ public class UnitTesting {
             // Converteix a mil·lisegons (opcional)
             double duracioMilisegons = duracio / 1_000_000.0;
 
-            System.out.println("La funció star ha tardat: " + duracioMilisegons + " ms");
+            System.out.println("La funció A star ha tardat: " + duracioMilisegons + " ms");
             cami2 = di.camiMesCurt(up, down, -1);
         }
         System.out.println("Cami 1:   " + cami1);
