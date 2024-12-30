@@ -13,21 +13,40 @@ import java.util.PriorityQueue;
 import java.util.Vector;
 
 /**
+ * La classe {@code Dijkstra} implementa l'algorisme de camí més curt
+ * personalitzat per al joc Hex. Aquesta classe calcula el camí més curt entre
+ * dos nodes del tauler, considerant també camins "virtuals" que representen
+ * connexions potencials o jugades futures.
+ *
+ * Es basa en una implementació amb una cua de prioritat per gestionar els nodes
+ * visitats i optimitzar l'exploració del tauler.
  *
  * @author nuria
  */
 public class Dijkstra {
 
+    private final int mida;
+    HexGameStatus hgs;
+    Veins vivi;
+    /**
+     * Constructor de la classe {@code Dijkstra}.
+     *
+     * @param mida la mida del tauler de joc.
+     * @param hgs l'estat actual del tauler encapsulat en {@code MyStatus}.
+     */
     public Dijkstra(int mida, MyStatus hgs) {
         this.mida = mida;
         this.hgs = hgs;
         vivi = new Veins(hgs);
     }
 
-    private final int mida;
-    HexGameStatus hgs;
-    Veins vivi;
-
+    /**
+     * Determina el costat (R, D o N) del tauler on es troba un punt donat.
+     *
+     * @param p el punt a comprovar.
+     * @return {@code "R"} si el punt està al costat dret, {@code "D"} si és a
+     * la part inferior, o {@code "N"} si no està en cap costat específic.
+     */
     private String costat(Point p) {
         if (p.x == mida) {
             return "R";
@@ -38,11 +57,19 @@ public class Dijkstra {
         return "N";
     }
 
+    /**
+     * Calcula el camí més curt entre dos nodes al tauler, considerant tant els
+     * camins reals com els virtuals.
+     *
+     * @param nIni el node inicial, representat per un objecte {@code Node}.
+     * @param nFi el node final, representat per un objecte {@code Node}.
+     * @param p el color del jugador per al qual es calcula el camí.
+     * @return el pes del camí més curt, que inclou tant distàncies físiques com
+     * un corrector pels virtuals.
+     */
     public double camiMesCurt(Node nIni, Node nFi, int p) {
-        // Hem decidit tenir els nodes en una PriorityQueue 
         PriorityQueue<Node> pq = new PriorityQueue<Node>(new ComparadorNode());
-
-        boolean[][] visitats = new boolean[11][11];
+        boolean[][] visitats = new boolean[mida][mida];
         // Primera iteració
         switch (nIni.corner) {
             case "L":
@@ -90,14 +117,11 @@ public class Dijkstra {
             default:
                 System.out.println("Error en la crida de camiMesCurt");
         }
-
         Node actual = pq.poll();
         while (actual != null && !(actual.esCantonada() && actual.corner.equals(nFi.corner))) {
-
             if (!actual.esCantonada() && !visitats[actual.point.x][actual.point.y]) {
                 visitats[actual.point.x][actual.point.y] = true;
-                Vector<Point> v = vivi.veins(actual.point);
-                
+                Vector<Point> v = vivi.veins(actual.point);                
                 for (Point t : v) {
                     String c = costat(t);
                     switch (c) {
