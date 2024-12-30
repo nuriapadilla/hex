@@ -12,9 +12,9 @@ import java.awt.Point;
  */
 public class Eval {
     Point punt;
-    int heur;
+    double heur;
 
-    public Eval(Point p, int h) {
+    public Eval(Point p, double h) {
         punt = p;
         heur = h;
     }
