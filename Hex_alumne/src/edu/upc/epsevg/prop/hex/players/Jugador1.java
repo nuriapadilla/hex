@@ -27,7 +27,6 @@ public class Jugador1 implements IPlayer, IAuto {
     long nodesExplored = 0;
     int player;
     int mida;
-    boolean virt;
     HashMap<MyStatus, Point> map;
     public Jugador1(boolean i, int p, boolean j) {
         id = i;
@@ -36,11 +35,11 @@ public class Jugador1 implements IPlayer, IAuto {
         virt = j;
     }
 
-    public int heuristica(MyStatus hgs) {
+    public double heuristica(MyStatus hgs) {
         nodesExplored = nodesExplored + 1;
 
-        int cami1;
-        int cami2;
+        double cami1;
+        double cami2;
         Node left = new Node("L", 0, null);
         Node right = new Node("R", Integer.MAX_VALUE, null);
         Node up = new Node("U", 0, null);
@@ -67,32 +66,27 @@ public class Jugador1 implements IPlayer, IAuto {
      * @return Columna òptima per al moviment.
      */
     public PlayerMove minimax(MyStatus hgs, int profunditat) { // LA PRINCIPAL
-        //System.out.println("Estic al minimax");
         if (fi) {
             return null;
         }
-        int alpha = Integer.MIN_VALUE;
-        int beta = Integer.MAX_VALUE;
+        double alpha = -Double.MAX_VALUE;
+        double beta = Double.MAX_VALUE;
         PlayerMove jugada = null;
         boolean primer = true;
-        int maxEval = Integer.MIN_VALUE;
+        double maxEval = -Double.MAX_VALUE;
         SearchType search = id == true ? SearchType.MINIMAX_IDS : SearchType.MINIMAX;
         Point primerajugada = null;
-        // Si tenim millor jiugada previa, prioritzem exprorar-la
+        // Si tenim millor jugada previa, prioritzem exprorar-la
         if (map.containsKey(hgs) && map.get(hgs)!=null) {
-            //System.out.println("Millor jugada");
             Point punt = map.get(hgs);
             primerajugada = punt;
-            //System.out.println(punt);
             MyStatus newHgs = new MyStatus(hgs);
             if (newHgs.getPos(punt.x, punt.y) == 0) {
                 newHgs.placeStone(punt);
-                //System.out.println("LA m");
                 if (newHgs.isGameOver()) {
-                    
                     return new PlayerMove(punt, nodesExplored, profunditat, search); // canviar el 0 i la profunditat, esta malament
                 } else {
-                    int h = minimazing(newHgs, profunditat - 1, alpha, beta);
+                    double h = minimazing(newHgs, profunditat - 1, alpha, beta);
                     if (h > maxEval || primer) {
                         maxEval = h;
                         primer = false;
@@ -102,7 +96,6 @@ public class Jugador1 implements IPlayer, IAuto {
                         alpha = h;
                     }
                     if (alpha > beta) {
-                        // System.out.println("Poda");
                         return jugada;
                     }
                 }
@@ -114,7 +107,6 @@ public class Jugador1 implements IPlayer, IAuto {
                 if (fi) {
                     return null;
                 }
-                // System.out.println("Evaluo la posició: " + i +" "+ j);
                 MyStatus newHgs = new MyStatus(hgs);
                 Point punt = new Point(i, j);
                 if (!(primerajugada != null && primerajugada.equals(punt))) {
@@ -124,10 +116,8 @@ public class Jugador1 implements IPlayer, IAuto {
                         if (newHgs.isGameOver()) {
                             return new PlayerMove(punt, nodesExplored, profunditat, search); // canviar el 0 i la profunditat, esta malament
                         } else {
-                            int h = minimazing(newHgs, profunditat - 1, alpha, beta);
-                            //System.out.println("Per la columna: " + i + " tenim heuristica: " + h);
+                            double h = minimazing(newHgs, profunditat - 1, alpha, beta);
                             if (h > maxEval || primer) {
-                                // System.out.println("Aquesta es millor");
                                 primer = false;
                                 maxEval = h;
                                 jugada = new PlayerMove(punt, nodesExplored, profunditat, search);
@@ -136,16 +126,12 @@ public class Jugador1 implements IPlayer, IAuto {
                                 alpha = h;
                             }
                             if (alpha > beta) {
-                                //       System.out.println("Poda");
                                 break;
                             }
                         }
                     }
                 }
             }
-        }
-        if (maxEval == Integer.MIN_VALUE) {
-            //System.out.println("Perdo 100%");
         }
         map.put(hgs, jugada.getPoint());
         return jugada;
@@ -160,13 +146,13 @@ public class Jugador1 implements IPlayer, IAuto {
      * @param beta Valor beta per a la poda alfa-beta.
      * @return Valor heurístic mínim trobat.
      */
-    public int minimazing(MyStatus hgs, int profunditat, int alpha, int beta) {
-        int minEval = Integer.MAX_VALUE;
+    public double minimazing(MyStatus hgs, int profunditat, double alpha, double beta) {
+        double minEval = Double.MAX_VALUE;
         if (fi) {
             return minEval; // retorno qualsevol cosa 
         }
         if (profunditat == 0) {
-            int h = heuristica(hgs);
+            double h = heuristica(hgs);
             return h;
         }
         Point p = null;
@@ -182,9 +168,9 @@ public class Jugador1 implements IPlayer, IAuto {
                 //System.out.println("LA m");
                 if (newHgs.isGameOver()) {
                     map.put(hgs,punt);
-                    return Integer.MIN_VALUE;
+                    return -Double.MAX_VALUE;
                 } else {
-                    int h = maximazing(newHgs, profunditat - 1, alpha, beta);
+                    double h = maximazing(newHgs, profunditat - 1, alpha, beta);
                     if (h < minEval) {
                         minEval = h;
                         p = punt;
@@ -195,7 +181,6 @@ public class Jugador1 implements IPlayer, IAuto {
                             beta = h;
                         }
                         if (beta < alpha) {
-                            //             System.out.println("Poda");
                             return minEval;
                         }
                     }
@@ -205,7 +190,7 @@ public class Jugador1 implements IPlayer, IAuto {
             for (int i = 0; i < hgs.getSize(); i++) {
                 for (int j = 0; j < hgs.getSize(); j++) {
                     if (fi) {
-                        return Integer.MAX_VALUE; // retorno qualsevol cosa
+                        return Double.MAX_VALUE; // retorno qualsevol cosa
                     }
                     newHgs = new MyStatus(hgs);
                     punt = new Point(i, j);
@@ -215,9 +200,9 @@ public class Jugador1 implements IPlayer, IAuto {
                             if (newHgs.isGameOver()) {
                                 //System.out.println("perdo");
                                 map.put(hgs, punt);
-                                return Integer.MIN_VALUE;
+                                return -Double.MAX_VALUE;
                             } else {
-                                int h = maximazing(newHgs, profunditat - 1, alpha, beta);
+                                double h = maximazing(newHgs, profunditat - 1, alpha, beta);
                                 if (h < minEval) {
                                     minEval = h;
                                     p = punt;
@@ -254,13 +239,13 @@ public class Jugador1 implements IPlayer, IAuto {
      * @param beta Valor beta per a la poda alfa-beta.
      * @return Valor heurístic màxim trobat.
      */
-    public int maximazing(MyStatus hgs, int profunditat, int alpha, int beta) {
-        int maxEval = Integer.MIN_VALUE;
+    public double maximazing(MyStatus hgs, int profunditat, double alpha, double beta) {
+        double maxEval = Double.MIN_VALUE;
         if (fi) {
             return maxEval; // retorno qualsevol cosa
         }
         if (profunditat == 0) {
-            int h = heuristica(hgs);
+            double h = heuristica(hgs);
             return h;
         }
         MyStatus newHgs;
@@ -273,11 +258,10 @@ public class Jugador1 implements IPlayer, IAuto {
             newHgs = new MyStatus(hgs);
             if (newHgs.getPos(punt.x, punt.y) == 0) {
                 newHgs.placeStone(punt);
-                //System.out.println("LA m");
                 if (newHgs.isGameOver()) {
-                    return Integer.MAX_VALUE;
+                    return Double.MAX_VALUE;
                 } else {
-                    int h = minimazing(newHgs, profunditat - 1, alpha, beta);
+                    double h = minimazing(newHgs, profunditat - 1, alpha, beta);
                     if (h > maxEval) {
                         maxEval = h;
                         p=punt;
@@ -286,7 +270,6 @@ public class Jugador1 implements IPlayer, IAuto {
                         alpha = h;
                     }
                     if (alpha > beta) {
-                        //           System.out.println("Poda");
                         return maxEval;
                     }
                 }
@@ -302,10 +285,9 @@ public class Jugador1 implements IPlayer, IAuto {
                     if (newHgs.getPos(i, j) == 0) {
                         newHgs.placeStone(punt);
                         if (newHgs.isGameOver()) {
-                            //System.out.println("guanyo");
-                            return Integer.MAX_VALUE;
+                            return Double.MAX_VALUE;
                         } else {
-                            int h = minimazing(newHgs, profunditat - 1, alpha, beta);
+                            double h = minimazing(newHgs, profunditat - 1, alpha, beta);
                             if (h > maxEval) {
                                 maxEval = h;
                                 p=punt;
@@ -314,7 +296,6 @@ public class Jugador1 implements IPlayer, IAuto {
                                 alpha = h;
                             }
                             if (alpha > beta) {
-                                //           System.out.println("Poda");
                                 break;
                             }
                         }
@@ -335,7 +316,6 @@ public class Jugador1 implements IPlayer, IAuto {
         player = hgs.getCurrentPlayerColor();
         mida = hgs.getSize();
         nodesExplored = 0;
-        //   System.out.println(hgs.getPos(1, 0));
         if (id) {
             int prof = 1;
             while (!fi) {
