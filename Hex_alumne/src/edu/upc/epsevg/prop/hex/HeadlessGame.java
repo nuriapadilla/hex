@@ -28,17 +28,33 @@ public class HeadlessGame {
     private int timeout;
     private int size;
     
+    private long totalTimePlayer1 = 0;   // Temps acumulat del jugador 1
+    private long totalTimePlayer2 = 0;   // Temps acumulat del jugador 2
+    private int movesPlayer1 = 0;        // Nombre de moviments del jugador 1
+    private int movesPlayer2 = 0;        // Nombre de moviments del jugador 2
+
+    
     public static void main(String[] args) {
 
 
         IPlayer player1 = new RandomPlayer("Paco");
         IPlayer player2 = new H_E_X_Player(2/*GB*/);                    
-        IPlayer player3 = new Jugador1(true, 2, true);
-        IPlayer player4 = new JugadorEstrella(true,4);
-        HeadlessGame game = new HeadlessGame(player4, player2, 11, 10/*s timeout*/, 3/*games*/);
-        GameResult gr = game.start();
-        System.out.println(gr);
+        IPlayer player3 = new Jugador1(false, 3, true);
+        IPlayer player5 = new Jugador1(true, 3, true);
 
+        IPlayer player4 = new JugadorEstrella(true,4);
+        HeadlessGame game1 = new HeadlessGame(player3, player1, 11, 100/*s timeout*/, 1/*games*/);
+        HeadlessGame game2 = new HeadlessGame(player5, player1, 11, 10/*s timeout*/, 1/*games*/);
+
+        GameResult gr1 = game1.start();
+        System.out.println(gr1);
+        game1.printAverageTimes(); // Mostra els temps mitjans
+        System.out.println("-----------------------------------------------");
+        
+        GameResult gr2 = game2.start();
+        System.out.println(gr2);
+        game2.printAverageTimes(); // Mostra els temps mitjans
+        System.out.println("-----------------------------------------------");
     }
 
     //=====================================================================================0
@@ -73,6 +89,7 @@ public class HeadlessGame {
             semaphore.tryAcquire();
             //System.out.println("." + new Date());
             final Result r = new Result();
+            long startTime = System.nanoTime(); // Mesura l'inici del moviment
             PlayerType cp = status.getCurrentPlayer();
             Thread t1 = new Thread(() -> {
                 PlayerMove m = null;
@@ -108,14 +125,26 @@ public class HeadlessGame {
             try {
                 if (!semaphore.tryAcquire(1, timeout * 1000 + WAIT_EXTRA_TIME, TimeUnit.MILLISECONDS)) {
 
-                    System.out.println("Espera il·legal ! Player trampós:"+cp.name());
+                   // System.out.println("Espera il·legal ! Player trampós:"+cp.name());
                     //throw new RuntimeException("Jugador trampós ! Espera il·legal !");
                     // Som millors persones deixant que el jugador il·legal continui jugant...
-                    semaphore.acquire();
+                    //semaphore.acquire();
                 }
 
             } catch (InterruptedException ex) {
                 Logger.getLogger(HeadlessGame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            // Registra el temps del moviment
+            long endTime = System.nanoTime(); // Mesura el final del moviment
+            long duration = endTime - startTime; // Temps del moviment en nanosegons
+
+            if (cp == PlayerType.PLAYER1) {
+                totalTimePlayer1 += duration;
+                movesPlayer1++;
+            } else {
+                totalTimePlayer2 += duration;
+                movesPlayer2++;
             }
             // Netegem la memòria (for free!)
             gc();
@@ -188,6 +217,22 @@ public class HeadlessGame {
         obj = null;
         while (ref.get() != null) {
             System.gc();
+        }
+    }
+    
+    private void printAverageTimes() {
+        if (movesPlayer1 > 0) {
+            double averagePlayer1 = totalTimePlayer1 / (double) movesPlayer1 / 1_000_000.0;
+            System.out.println("Temps mitjà del jugador 1: " + averagePlayer1 + " ms");
+        } else {
+            System.out.println("Jugador 1 no ha realitzat moviments.");
+        }
+
+        if (movesPlayer2 > 0) {
+            double averagePlayer2 = totalTimePlayer2 / (double) movesPlayer2 / 1_000_000.0;
+            System.out.println("Temps mitjà del jugador 2: " + averagePlayer2 + " ms");
+        } else {
+            System.out.println("Jugador 2 no ha realitzat moviments.");
         }
     }
 }

@@ -32,7 +32,6 @@ public class Jugador1 implements IPlayer, IAuto {
         id = i;
         profMax = p;
         map = new HashMap<>();
-        virt = j;
     }
 
     public double heuristica(MyStatus hgs) {
@@ -80,7 +79,7 @@ public class Jugador1 implements IPlayer, IAuto {
         if (map.containsKey(hgs) && map.get(hgs)!=null) {
             Point punt = map.get(hgs);
             primerajugada = punt;
-            MyStatus newHgs = new MyStatus(hgs);
+            MyStatus newHgs = new MyStatus((MyStatus)hgs);
             if (newHgs.getPos(punt.x, punt.y) == 0) {
                 newHgs.placeStone(punt);
                 if (newHgs.isGameOver()) {
@@ -107,7 +106,7 @@ public class Jugador1 implements IPlayer, IAuto {
                 if (fi) {
                     return null;
                 }
-                MyStatus newHgs = new MyStatus(hgs);
+                MyStatus newHgs = new MyStatus((MyStatus)hgs);
                 Point punt = new Point(i, j);
                 if (!(primerajugada != null && primerajugada.equals(punt))) {
                     if (newHgs.getPos(i, j) == 0) {
@@ -162,7 +161,7 @@ public class Jugador1 implements IPlayer, IAuto {
         if (map.containsKey(hgs) && map.get(hgs)!=null ) {
             punt = map.get(hgs);
             primerajugada = punt;
-            newHgs = new MyStatus(hgs);
+            newHgs = new MyStatus((MyStatus)hgs);
             if (newHgs.getPos(punt.x, punt.y) == 0) {
                 newHgs.placeStone(punt);
                 //System.out.println("LA m");
@@ -192,7 +191,7 @@ public class Jugador1 implements IPlayer, IAuto {
                     if (fi) {
                         return Double.MAX_VALUE; // retorno qualsevol cosa
                     }
-                    newHgs = new MyStatus(hgs);
+                    newHgs = new MyStatus((MyStatus)hgs);
                     punt = new Point(i, j);
                     if (!(primerajugada != null && primerajugada.equals(punt))) {
                         if (newHgs.getPos(i, j) == 0) {
@@ -255,7 +254,7 @@ public class Jugador1 implements IPlayer, IAuto {
         if (map.containsKey(hgs) && map.get(hgs)!=null) {
             punt = map.get(hgs);
             primerajugada = punt;
-            newHgs = new MyStatus(hgs);
+            newHgs = new MyStatus((MyStatus)hgs);
             if (newHgs.getPos(punt.x, punt.y) == 0) {
                 newHgs.placeStone(punt);
                 if (newHgs.isGameOver()) {
@@ -280,7 +279,7 @@ public class Jugador1 implements IPlayer, IAuto {
                     if (fi) {
                         return maxEval; // retorno qualsevol cosa
                     }
-                    newHgs = new MyStatus(hgs);
+                    newHgs = new MyStatus((MyStatus)hgs);
                     punt = new Point(i, j);
                     if (newHgs.getPos(i, j) == 0) {
                         newHgs.placeStone(punt);
@@ -320,8 +319,6 @@ public class Jugador1 implements IPlayer, IAuto {
             int prof = 1;
             while (!fi) {
                 nodesExplored = 0;
-                //System.out.println("Miro la prof: " + prof);
-                // TODO: si ja veiem que guanyem amb tot o perdem a tot fem un if guarro i tallem, no cal seguir amb més profunditat
                 MyStatus mhgs = new MyStatus(hgs);
                 PlayerMove newJugada = minimax(mhgs, prof);
                 if (!fi) {

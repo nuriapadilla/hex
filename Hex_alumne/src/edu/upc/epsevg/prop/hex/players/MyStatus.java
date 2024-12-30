@@ -43,8 +43,18 @@ public class MyStatus extends HexGameStatus {
         hash^=zorbit[point.x][point.y][super.getCurrentPlayerColor()+1];
     }
     
+    public MyStatus(MyStatus hgs) {
+        super(hgs);
+        System.out.println("holaaa");
+        int mida = hgs.getSize();
+        hash = hgs.hash;
+        initZorbit(mida);
+    }
+
+    
     public MyStatus(HexGameStatus hgs){
         super(hgs);
+        System.out.println("adeu");
         int mida = hgs.getSize();
         hash = 0;
         initZorbit(mida);
@@ -55,6 +65,8 @@ public class MyStatus extends HexGameStatus {
         }
         }
     }
+    
+
     public MyStatus(int mida) {
         super(mida);
         hash = 0;
